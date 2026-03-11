@@ -13,13 +13,33 @@ Repositório do projeto de grupo da UC 21179 - Laboratório de Desenvolvimento d
 - Maria Sarabando - Developer - aluno n.º 2400294
 - Marco Oliveira - Tester - aluno n.º 
 
+
 ## Estrutura do projeto
 
-a decidir
+src/ → código fonte  
+tests/ → testes  
+docs/ → documentação
 
-## Workflow
+---
+
+## Workflow de desenvolvimento
 
 O projeto utiliza duas branches principais:
 
-- main → versão estável
-- develop → desenvolvimento
+- `main` → versão estável
+- `develop` → integração do desenvolvimento
+
+### Regras de colaboração
+
+- Não fazer **push direto para `main`**
+- Criar uma branch para cada funcionalidade
+- Abrir **Pull Request para `develop`**
+
+### Nomes de branches
+Serão definidos conforme as funcionalidades forem criadas.
+
+### Commits
+Utilizar mensagens claras
+
+## Organização de tarefas
+A atribuir posteriormente pela equipa.
