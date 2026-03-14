@@ -1,50 +1,62 @@
 # Contributing
 
-Este documento descreve as regras básicas de colaboração para o projeto.
+Este documento define as regras básicas de colaboração no projeto.
 
-## Branches principais
+## Branches
 
-O repositório utiliza duas branches principais:
+O repositório utiliza as seguintes branches principais:
 
-- `main` – versão estável do projeto
-- `develop` – integração do desenvolvimento
+- `main` – versão final e estável do projeto
+- `develop` – branch de integração e testes
 
-## Workflow de desenvolvimento
+Além destas, cada elemento do grupo deve trabalhar na sua **branch individual**.
+
+## Forma de trabalho
+
+O trabalho deve seguir, sempre que possível, este fluxo:
 
 1. Atualizar a branch `develop`
-2. Criar uma nova branch para a funcionalidade ou correção
-3. Fazer commits das alterações
-4. Enviar a branch para o repositório
-5. Abrir um Pull Request para `develop`
+2. Atualizar a branch individual
+3. Desenvolver e testar as alterações na branch individual, no Visual Studio
+4. Fazer commit na branch individual
+5. Enviar a branch para o repositório remoto
+6. Integrar as alterações na `develop`
+7. Depois de testadas e validadas na `develop`, integrar na `main`
 
-## Nomes de branches
+## Branches individuais
 
-Utilizar nomes claros e descritivos.
+Cada elemento deve trabalhar na sua própria branch.
 
-Exemplos:
+- `claudia`
+- `joao`
+- `joel`
+- `maria`
+- `marco`
 
-feature/nome-da-funcionalidade  
-fix/nome-do-problema  
-docs/documentacao  
+se quiserem optar por outro nome convém que seja claro e identificável como pertencente a cada elemento do grupo.
 
 ## Commits
 
-Utilizar mensagens claras e descritivas.
+As mensagens de commit devem ser claras e descritivas.
 
-Exemplos:
-
-feat: add login functionality  
-fix: correct database connection  
-docs: update README  
 
 ## Pull Requests
 
-Antes de abrir um Pull Request:
+Antes de integrar alterações na `develop`, deve confirmar-se que:
 
-- garantir que o código compila
-- garantir que não existem conflitos com `develop`
-- descrever claramente as alterações realizadas
+- o projeto compila corretamente
+- as alterações foram testadas
+- não existem conflitos com a `develop`
+- a descrição do Pull Request é clara
+
+## Regras gerais
+
+- Não devem ser feitas alterações diretamente na branch **main**.
+- Cada elemento deve desenvolver o seu trabalho na respetiva **branch individual**.
+- As alterações concluídas devem ser integradas na branch **develop**.
+- Antes de integrar alterações, deve verificar-se se o projeto compila e funciona corretamente no **Visual Studio**.
+- Depois de testadas e validadas na **develop**, as alterações poderão ser integradas na **main**.
 
 ## Organização de tarefas
 
-As tarefas do projeto serão geridas através das **Issues** do GitHub.
+As tarefas poderão ser geridas através das **Issues** do GitHub, caso o grupo considere útil.
