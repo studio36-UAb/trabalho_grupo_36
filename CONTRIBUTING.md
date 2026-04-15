@@ -77,3 +77,28 @@ Em caso de conflitos, estes devem ser resolvidos na branch de origem antes de o 
 - Nunca fazer push direto para `main` ou `develop`
 - Cada elemento desenvolve o seu trabalho na respetiva branch individual ou de funcionalidade
 - A integração em `main` deve ser sempre articulada com a líder de projeto e o verificador
+
+---
+
+## Arquitetura MVC — regras de separação de camadas
+
+O projeto segue o padrão MVC. Para manter o acoplamento baixo, devem ser respeitadas as seguintes regras:
+
+- A **View não pode depender do Model** — não deve importar o namespace `ModelComponent` nem receber instâncias do Model
+- O **Model não pode depender da View** — não deve importar o namespace `ViewComponent`
+- Toda a comunicação entre Model e View é feita **exclusivamente através de eventos**, com os parâmetros necessários incluídos no próprio evento
+- O **Controller é o único intermediário** — subscreve os eventos do Model e chama os métodos públicos da View para atualizar o ecrã
+
+### Exemplo correto de evento com dados
+
+```csharp
+// Model — publica o estado diretamente no evento
+public event Action<bool>? SendLoginState;
+SendLoginState?.Invoke(IsLoggedIn);
+
+// View — recebe os dados como parâmetro, sem aceder ao Model
+public void ShowLoginResult(bool isLoggedIn) { ... }
+
+// Controller — faz a ligação
+model.SendLoginState += isLoggedIn => view.ShowLoginResult(isLoggedIn);
+```

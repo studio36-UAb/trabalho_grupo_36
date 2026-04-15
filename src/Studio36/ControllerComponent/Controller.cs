@@ -11,9 +11,15 @@ namespace Studio36.ControllerComponent
         public Controller()
         {
             model = new Model();
-            view = new View(model);
+            view = new View();
 
             view.UserAttemptLogin += ProcessLogin;
+            model.SendLoginState += OnLoginStateReceived;
+        }
+
+        private void OnLoginStateReceived(bool isLoggedIn)
+        {
+            view.ShowLoginResult(isLoggedIn);
         }
 
         public void StartProgram()

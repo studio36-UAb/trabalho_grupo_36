@@ -1,21 +1,16 @@
-﻿using Studio36.ModelComponent;
-using Studio36.ViewComponent.Menus;
+﻿using Studio36.ViewComponent.Menus;
 
 namespace Studio36.ViewComponent
 {
     public class View
     {
-        private readonly Model model;
         private bool isRunning = true;
-
 
         // Events
         public event Action<string, string>? UserAttemptLogin;
 
-        public View(Model model)
+        public View()
         {
-            this.model = model;
-            model.SendLoginState += OnLoginChanged;
         }
 
         public void Run()
@@ -55,9 +50,9 @@ namespace Studio36.ViewComponent
 
             return (email, password);
         }
-        private void OnLoginChanged()
+        public void ShowLoginResult(bool isLoggedIn)
         {
-            if (model.IsLoggedIn)
+            if (isLoggedIn)
             {
                 Console.WriteLine("The user is logged in. Updating UI...");
             }
