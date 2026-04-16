@@ -20,14 +20,14 @@ Este repositório destina-se ao desenvolvimento do projeto de grupo da empresa s
 
 > **Fase em curso: Implementação** (abril 2026)
 
-A fase de análise e arquitetura preliminar foi concluída em março de 2026, tendo produzido:
+A fase de análise e arquitetura preliminar produziu o seguinte:
 
 - Definição da arquitetura MVC e dos inputs/outputs do sistema
 - Diagrama de sequência e diagrama de componentes
 - Análise da API de negócio e proposta de aplicação-demonstradora
 - Plano de verificações v2
 
-A implementação da aplicação está em curso desde abril de 2026. A estrutura base do projeto está criada com a separação entre as três camadas MVC — Model, View e Controller — comunicando exclusivamente através de eventos e delegados, sem dependências diretas entre View e Model.
+A implementação da aplicação está em curso desde abril de 2026. A estrutura base está criada com a separação entre as trÊs camadas MVC - Model, View e Controller - comunicando exclusivamente através de eventos e delegados, sem dependências diretas entre View e Model.
 
 ---
 
