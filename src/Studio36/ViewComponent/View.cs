@@ -9,7 +9,7 @@ namespace Studio36.ViewComponent
         // Events
         public event Action<string, string>? UserAttemptLogin;
 
-        public View()
+       public View()
         {
         }
 
