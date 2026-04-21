@@ -22,9 +22,14 @@ namespace Studio36.ControllerComponent
 
         public void StartProgram()
         {
+            RunStateMachine(); 
+        }
+
+        // State Machine to manage menu navigation. State changed by event handlers
+        private void RunStateMachine()
+        {
             try
             {
-                // State machine loop
                 while (_currentMenu != MenuState.Exit)
                 {
                     switch (_currentMenu)
@@ -47,24 +52,6 @@ namespace Studio36.ControllerComponent
             finally
             {
                 Logger.EndSession();
-            }
-        }
-
-        // State Machine to manage menu navigation. State changed by event handlers
-        private void RunStateMachine()
-        {
-            while (_currentMenu != MenuState.Exit)
-            {
-                switch (_currentMenu)
-                {
-                    case MenuState.StartMenu:
-                        view.RunStartMenu();
-                        break;
-                    case MenuState.MainMenu:
-                        view.RunMainMenu();
-                        _currentMenu = MenuState.StartMenu;
-                        break;
-                }
             }
         }
 
