@@ -14,7 +14,7 @@
             Console.Clear();
             Console.WriteLine("\nMain Menu!");
             Console.WriteLine("Please select an option:");
-            Console.WriteLine("1. New");
+            Console.WriteLine("1. New Project");
             Console.Write("Selection: ");
         }
 

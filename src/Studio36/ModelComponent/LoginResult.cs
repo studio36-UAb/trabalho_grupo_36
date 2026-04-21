@@ -3,7 +3,6 @@
     public enum LoginResult
     {
         Success,
-        InvalidCredentials,
-        DatabaseError
+        InvalidCredentials
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Studio36.ModelComponent;
 using Studio36.ViewComponent;
+using Studio36.Utils;
 
 namespace Studio36.ControllerComponent
 {
@@ -21,7 +22,32 @@ namespace Studio36.ControllerComponent
 
         public void StartProgram()
         {
-            RunStateMachine();
+            try
+            {
+                // State machine loop
+                while (_currentMenu != MenuState.Exit)
+                {
+                    switch (_currentMenu)
+                    {
+                        case MenuState.StartMenu:
+                            view.RunStartMenu();
+                            break;
+
+                        case MenuState.MainMenu:
+                            view.RunMainMenu();
+                            _currentMenu = MenuState.StartMenu;
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occur: " + ex.Message);
+            }
+            finally
+            {
+                Logger.EndSession();
+            }
         }
 
         // State Machine to manage menu navigation. State changed by event handlers
@@ -69,17 +95,17 @@ namespace Studio36.ControllerComponent
             model.AreCredentialsValid(username, password);
         }
 
-        private void HandleLoginResult(LoginResult loginResult)
+        private void HandleLoginResult(LoginResult loginResult, string message)
         {
             if (loginResult == LoginResult.Success)
             {
-                view.ShowLoginSuccess();
+                View.ShowLoginSuccess(message);
                 _currentMenu = MenuState.MainMenu;  // Transition to main menu
             }
             else
             {
-                // printLoginResult(loginResult);
-                _currentMenu = MenuState.StartMenu;  // Stay in start menu
+                View.ShowLoginFailure(message);
+                _currentMenu = MenuState.StartMenu;
             }
         }
 

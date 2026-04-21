@@ -21,12 +21,18 @@
         {
             MainMenu mainMenu = new MainMenu();
             mainMenu.DisplayMenu();
-            // To Do: StartMenuOption menuOption = mainMenu.GetMenuOption(mainMenu.GetUserInput(), ref shouldRun);
+            // StartMenuOption menuOption = mainMenu.GetMenuOption(mainMenu.GetUserInput());
         }
 
-        public void ShowLoginSuccess()
+        public static void ShowLoginSuccess(string message)
         {
-            Console.WriteLine("Login successful! Redirecting to main menu...");
+            Console.WriteLine(message + "Redirecting to main menu...");
+            System.Threading.Thread.Sleep(2000);
+        }
+
+        public static void ShowLoginFailure(string message)
+        {
+            Console.WriteLine(message + "Returning to start menu...");
             System.Threading.Thread.Sleep(2000);
         }
     }

@@ -1,0 +1,71 @@
+using Newtonsoft.Json;
+using Studio36.Utils;
+
+namespace Studio36.ModelComponent.Services
+{
+    public class AuthenticationService
+    {
+        private readonly string _jsonFilePath;
+        public List<UserData> _users { get; set; } = [];
+
+        public AuthenticationService(string jsonFilePath)
+        {
+            _jsonFilePath = jsonFilePath;
+            LoadUsers();
+        }
+
+        private void LoadUsers()
+        {
+            try
+            {
+                if (File.Exists(_jsonFilePath))
+                {
+                    string jsonContent = File.ReadAllText(_jsonFilePath);
+
+                    // Deserialize with JSON.Net
+                    _users = JsonConvert.DeserializeObject<List<UserData>>(jsonContent)!;
+
+                    if (_users == null)
+                    {
+                        Logger.Warning("User database was empty or null after deserialization.");
+                        throw new Exception("Database Empty.");
+                    }
+                }
+                else
+                {
+                    Logger.Warning($"User database file not found: {_jsonFilePath}");
+                    throw new Exception("User database file not found.");
+                }
+            }
+            catch (JsonException jsonEx)
+            {
+                Logger.Error("JSON parsing failed. Check if JSON format matches UserDatabase structure.", jsonEx);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Unexpected error loading users. Specific cause: " + ex.Message);
+                throw new Exception("Database is temporarly unavailable. Try it again later, please.");
+            }
+        }
+
+        public (LoginResult, string) ValidateCredentials(string username, string password)
+        {
+            UserData? user = _users.FirstOrDefault(u => u.Username == username);
+
+            if (user == null)
+            {
+                Logger.Info($"Login attempt failed: User '{username}' not found.");
+                return (LoginResult.InvalidCredentials, "User not found. ");
+            }
+
+            if (user.Password == password)
+            {
+                Logger.Info($"User '{username}' logged in successfully.");
+                return (LoginResult.Success, "Login successful. ");
+            }
+
+            Logger.Warning($"Login attempt failed: Invalid password for user '{username}'.");
+            return (LoginResult.InvalidCredentials, "Invalid password. ");
+        }
+    }
+}
