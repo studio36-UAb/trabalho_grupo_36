@@ -35,5 +35,17 @@
             Console.WriteLine(message + "Returning to start menu...");
             System.Threading.Thread.Sleep(2000);
         }
+
+        public static void ShowSignUpSuccess(string message)
+        {
+            Console.WriteLine(message + "Returning to start menu...");
+            System.Threading.Thread.Sleep(2000);
+        }
+
+        public static void ShowSignUpFailure(string message)
+        {
+            Console.WriteLine(message + "Please try again...");
+            System.Threading.Thread.Sleep(2000);
+        }
     }
 }

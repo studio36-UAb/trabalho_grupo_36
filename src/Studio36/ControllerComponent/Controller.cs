@@ -18,6 +18,7 @@ namespace Studio36.ControllerComponent
 
             view.StartMenuOptionSent += ProcessStartMenuOption;
             model.LoginEvaluated += HandleLoginResult;
+            model.SignUpEvaluated += HandleSignUpResult;
         }
 
         public void StartProgram()
@@ -65,7 +66,8 @@ namespace Studio36.ControllerComponent
                     ProcessLogin(username, password);
                     break;
                 case StartMenuOption.SignUp:
-                    // Handle sign up logic here
+                    var (signUpUsername, signUpPassword) = startMenu.GetSignUpData();
+                    ProcessSignUp(signUpUsername, signUpPassword);
                     break;
                 case StartMenuOption.Exit:
                     _currentMenu = MenuState.Exit;
@@ -82,18 +84,40 @@ namespace Studio36.ControllerComponent
             model.AreCredentialsValid(username, password);
         }
 
+        public void ProcessSignUp(string username, string password)
+        {
+            model.RegisterUser(username, password);
+        }
+
         private void HandleLoginResult(LoginResult loginResult, string message)
         {
             if (loginResult == LoginResult.Success)
             {
                 View.ShowLoginSuccess(message);
-                _currentMenu = MenuState.MainMenu;  // Transition to main menu
+                _currentMenu = MenuState.MainMenu;
             }
             else
             {
                 View.ShowLoginFailure(message);
                 _currentMenu = MenuState.StartMenu;
             }
+        }
+
+        private void HandleSignUpResult(SignUpResult signUpResult, string message)
+        {
+            switch (signUpResult)
+            {
+                case SignUpResult.Success:
+                    View.ShowSignUpSuccess(message);
+                    break;
+                case SignUpResult.UserAlreadyExists:
+                case SignUpResult.InvalidInput:
+                case SignUpResult.DatabaseError:
+                    View.ShowSignUpFailure(message);
+                    break;
+            }
+
+            _currentMenu = MenuState.StartMenu;
         }
 
 
