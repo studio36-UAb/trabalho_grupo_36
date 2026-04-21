@@ -7,4 +7,19 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="..\..\UsersDatabase\UsersAccounts.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\UsersDatabase\UsersAccounts.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>UsersAccounts.json</Link>
+    </Content>
+  </ItemGroup>
+
 </Project>
