@@ -1,68 +1,33 @@
-﻿using Studio36.ViewComponent.Menus;
-
-namespace Studio36.ViewComponent
+﻿namespace Studio36.ViewComponent
 {
     public class View
     {
-        private bool isRunning = true;
+        // Start Menu Event
+        public event Action<StartMenuOption>? StartMenuOptionSent;
 
-        // Events
-        public event Action<string, string>? UserAttemptLogin;
-
-       public View()
+        public View()
         {
         }
 
-        public void Run()
+        public void RunStartMenu()
         {
-            while (isRunning)
-            {
-                Menu.ShowPublicMenu();
-                string userInput = Console.ReadLine() ?? "";
-
-                switch (userInput)
-                {
-                    case "1":
-                        var credentials = GetLoginData();
-                        UserAttemptLogin?.Invoke(credentials.email, credentials.password);
-                        break;
-                    case "2":
-                        Console.WriteLine("Sign up not implemented yet.");
-                        break;
-                    case "3":
-                        isRunning = false;
-                        Console.WriteLine("Goodbye!");
-                        break;
-                    default:
-                        Console.WriteLine("Invalid option, try again.");
-                        break;
-                }
-            }
+            StartMenu startMenu = new StartMenu();
+            startMenu.DisplayMenu();
+            StartMenuOption menuOption = startMenu.GetMenuOption(startMenu.GetUserInput());
+            StartMenuOptionSent?.Invoke(menuOption);
         }
 
-        private (string email, string password) GetLoginData()
+        public void RunMainMenu()
         {
-            Console.WriteLine("Please enter your email:");
-            string email = Console.ReadLine() ?? "";
-
-            Console.WriteLine("Please enter your password:");
-            string password = Console.ReadLine() ?? "";
-
-            return (email, password);
-        }
-        public void ShowLoginResult(bool isLoggedIn)
-        {
-            if (isLoggedIn)
-            {
-                Console.WriteLine("The user is logged in. Updating UI...");
-            }
-            else
-            {
-                Console.WriteLine("Login failed.");
-            }
+            MainMenu mainMenu = new MainMenu();
+            mainMenu.DisplayMenu();
+            // To Do: StartMenuOption menuOption = mainMenu.GetMenuOption(mainMenu.GetUserInput(), ref shouldRun);
         }
 
-
-
+        public void ShowLoginSuccess()
+        {
+            Console.WriteLine("Login successful! Redirecting to main menu...");
+            System.Threading.Thread.Sleep(2000);
+        }
     }
 }
