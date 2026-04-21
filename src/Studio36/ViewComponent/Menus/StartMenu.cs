@@ -26,16 +26,6 @@
             return Console.ReadLine() ?? "";
         }
 
-        public (string username, string password) GetLoginData()
-        {
-            Console.Write("Username: ");
-            string username = Console.ReadLine() ?? "";
-            Console.Write("Password: ");
-            string password = Console.ReadLine() ?? "";
-
-            return (username, password);
-        }
-
         public StartMenuOption GetMenuOption(string menuOption)
         {
             return menuOption switch
@@ -46,5 +36,28 @@
                 _ => StartMenuOption.NotValid
             };
         }
+
+        public (string username, string password) GetLoginData()
+        {
+            Console.Write("Please enter your Username: ");
+            string username = Console.ReadLine() ?? "";
+
+            Console.Write("Please enter your Password: ");
+            string password = Console.ReadLine() ?? "";
+
+            return (username, password);
+        }
+
+        public (string username, string password) GetSignUpData()
+        {
+            Console.Write("Please enter your Username: ");
+            string username = Console.ReadLine() ?? "";
+
+            Console.Write("Please enter your Password: "); // Maybe add password confirmation in the future
+            string password = Console.ReadLine() ?? "";
+
+            return (username, password);
+        }
+
     }
 }

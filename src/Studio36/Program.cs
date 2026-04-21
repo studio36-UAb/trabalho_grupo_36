@@ -18,6 +18,7 @@ class Program
         }
         finally
         {
+            FileUtils.CopyRuntimeDBtoSourceDB();
             Logger.EndSession();
         }
     }

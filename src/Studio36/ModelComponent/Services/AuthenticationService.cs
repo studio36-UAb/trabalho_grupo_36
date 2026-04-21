@@ -10,7 +10,7 @@ namespace Studio36.ModelComponent.Services
 
         public AuthenticationService(string jsonFilePath)
         {
-            _jsonFilePath = jsonFilePath;
+            _jsonFilePath = Path.Combine(AppContext.BaseDirectory, jsonFilePath);
             LoadUsers();
         }
 
@@ -66,6 +66,64 @@ namespace Studio36.ModelComponent.Services
 
             Logger.Warning($"Login attempt failed: Invalid password for user '{username}'.");
             return (LoginResult.InvalidCredentials, "Invalid password. ");
+        }
+
+        public (SignUpResult, string) RegisterUser(string username, string password)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+                {
+                    Logger.Warning("Sign up attempt failed: Empty username or password.");
+                    return (SignUpResult.InvalidInput, "Username or password cannot be empty. ");
+                }
+
+                if (password.Length < 4)
+                {
+                    Logger.Warning($"Sign up attempt failed: Password too short for user '{username}'.");
+                    return (SignUpResult.InvalidInput, "Password must be at least 4 characters long. ");
+                }
+
+                // Check if user already exists
+                UserData? existingUser = _users.FirstOrDefault(u => u.Username == username);
+                if (existingUser != null)
+                {
+                    Logger.Info($"Sign up attempt failed: User '{username}' already exists.");
+                    return (SignUpResult.UserAlreadyExists, "Username already taken. Please choose another. ");
+                }
+
+                _users.Add(new UserData
+                {
+                    Username = username,
+                    Password = password
+                });
+
+                // Save to JSON
+                SaveUsers();
+
+                Logger.Info($"User '{username}' registered successfully.");
+                return (SignUpResult.Success, "Registration successful! You can now log in. ");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"Error during user registration: {ex.Message}", ex);
+                return (SignUpResult.DatabaseError, "An error occurred during registration. Please try again later. ");
+            }
+        }
+
+        private void SaveUsers()
+        {
+            try
+            {
+                string jsonContent = JsonConvert.SerializeObject(_users, Formatting.Indented);
+                File.WriteAllText(_jsonFilePath, jsonContent);
+                Logger.Info($"User database saved successfully to: {_jsonFilePath}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Failed to save user database.", ex);
+                throw new Exception("Failed to save user data.");
+            }
         }
     }
 }
