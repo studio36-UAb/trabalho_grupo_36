@@ -1,9 +1,10 @@
 ﻿namespace Studio36.ModelComponent
 {
-    public enum LoginResult
+    public enum SignUpResult
     {
         Success,
-        InvalidCredentials,
+        UserAlreadyExists,
+        InvalidInput,
         DatabaseError
     }
 }

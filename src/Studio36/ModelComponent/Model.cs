@@ -1,28 +1,29 @@
-﻿namespace Studio36.ModelComponent
+﻿using Studio36.ModelComponent.Services;
+
+namespace Studio36.ModelComponent
 {
     public class Model
     {
-        public event Action<LoginResult>? LoginEvaluated;
+        private readonly AuthenticationService _authenticationService;
+
+        public event Action<LoginResult, string>? LoginEvaluated;
+        public event Action<SignUpResult, string>? SignUpEvaluated;
 
         public Model()
         {
+            _authenticationService = new AuthenticationService("UsersAccounts.json");
         }
 
         public void AreCredentialsValid(string username, string password)
         {
-            Console.WriteLine("Checking Login Credentials...");
-            if (username == "Manel" && password == "AmorDeMae") // Should consult a database or an API
-            {
-                LoginEvaluated?.Invoke(LoginResult.Success);
-            }
-            else if (username == null && password == null)
-            {
-                LoginEvaluated?.Invoke(LoginResult.InvalidCredentials);
-            }
-            else
-            {
-                LoginEvaluated?.Invoke(LoginResult.DatabaseError);
-            }
+            var (loginResult, message) = _authenticationService.ValidateCredentials(username, password);
+            LoginEvaluated?.Invoke(loginResult, message);
+        }
+
+        public void RegisterUser(string username, string password)
+        {
+            var (signUpResult, message) = _authenticationService.RegisterUser(username, password);
+            SignUpEvaluated?.Invoke(signUpResult, message);
         }
     }
 }
