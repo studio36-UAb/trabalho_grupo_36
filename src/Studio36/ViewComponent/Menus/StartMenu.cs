@@ -7,17 +7,17 @@
         Exit,
         NotValid
     }
+
     public class StartMenu
     {
         public void DisplayMenu()
         {
             Console.Clear();
-            Console.WriteLine("\nWelcome to Studio36!");
+            Console.WriteLine("Welcome to Studio36!");
             Console.WriteLine("Please select an option:");
             Console.WriteLine("1. Log in");
             Console.WriteLine("2. Sign up");
-            Console.WriteLine("3. Exit");
-            Console.Write("Selection: ");
+            Console.WriteLine("3. Exit\n");
         }
 
         public string GetUserInput()
@@ -26,29 +26,38 @@
             return Console.ReadLine() ?? "";
         }
 
-        public (string email, string password) GetLoginData()
-        {
-            Console.Write("Email: ");
-            string email = Console.ReadLine() ?? "";
-            Console.Write("Password: ");
-            string password = Console.ReadLine() ?? "";
-
-            return (email, password);
-        }
-
         public StartMenuOption GetMenuOption(string menuOption)
         {
-            switch (menuOption)
+            return menuOption switch
             {
-                case "1":
-                    return StartMenuOption.Login;
-                case "2":
-                    return StartMenuOption.SignUp;
-                case "3":
-                    return StartMenuOption.Exit;
-                default:
-                    return StartMenuOption.NotValid;
-            }
+                "1" => StartMenuOption.Login,
+                "2" => StartMenuOption.SignUp,
+                "3" => StartMenuOption.Exit,
+                _ => StartMenuOption.NotValid
+            };
         }
+
+        public (string username, string password) GetLoginData()
+        {
+            Console.Write("Please enter your Username: ");
+            string username = Console.ReadLine() ?? "";
+
+            Console.Write("Please enter your Password: ");
+            string password = Console.ReadLine() ?? "";
+
+            return (username, password);
+        }
+
+        public (string username, string password) GetSignUpData()
+        {
+            Console.Write("Please enter your Username: ");
+            string username = Console.ReadLine() ?? "";
+
+            Console.Write("Please enter your Password: "); // Maybe add password confirmation in the future
+            string password = Console.ReadLine() ?? "";
+
+            return (username, password);
+        }
+
     }
 }
