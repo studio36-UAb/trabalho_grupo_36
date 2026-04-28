@@ -1,51 +1,81 @@
-﻿namespace Studio36.ViewComponent
+﻿using System;
+
+namespace Studio36.ViewComponent
 {
     public class View
     {
-        // Start Menu Event
-        public event Action<StartMenuOption>? StartMenuOptionSent;
+        private bool isRunning = true;
+        private readonly StartMenu startMenu;
+
+        public event Action<string, string>? UserAttemptLogin;
 
         public View()
         {
+            startMenu = new StartMenu();
         }
 
-        public void RunStartMenu()
+        public void Run()
         {
-            StartMenu startMenu = new StartMenu();
-            startMenu.DisplayMenu();
-            StartMenuOption menuOption = startMenu.GetMenuOption(startMenu.GetUserInput());
-            StartMenuOptionSent?.Invoke(menuOption);
+            while (isRunning)
+            {
+                startMenu.DisplayMenu();
+                string userInput = (startMenu.GetUserInput() ?? "").Trim();
+                StartMenuOption selectedOption = startMenu.GetMenuOption(userInput);
+
+                switch (selectedOption)
+                {
+                    case StartMenuOption.Login:
+                        var credentials = GetLoginData();
+                        UserAttemptLogin?.Invoke(credentials.email, credentials.password);
+                        break;
+
+                    case StartMenuOption.SignUp:
+                        Console.WriteLine("Sign up not implemented yet.");
+                        break;
+
+                    case StartMenuOption.Exit:
+                        isRunning = false;
+                        Console.WriteLine("Goodbye!");
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid option, try again.");
+                        break;
+                }
+            }
         }
 
-        public void RunMainMenu()
+        private (string email, string password) GetLoginData()
         {
-            MainMenu mainMenu = new MainMenu();
-            mainMenu.DisplayMenu();
-            // StartMenuOption menuOption = mainMenu.GetMenuOption(mainMenu.GetUserInput());
+            var credentials = startMenu.GetLoginData();
+
+            string email = (credentials.email ?? "").Trim();
+            string password = (credentials.password ?? "").Trim();
+
+            return (email, password);
         }
 
-        public static void ShowLoginSuccess(string message)
+        public void ShowLoginResult(bool isLoggedIn)
         {
-            Console.WriteLine(message + "Redirecting to main menu...");
-            System.Threading.Thread.Sleep(2000);
+            if (isLoggedIn)
+            {
+                Console.WriteLine("The user is logged in. Updating UI...");
+            }
+            else
+            {
+                Console.WriteLine("Login failed. Please check your credentials and try again.");
+            }
+
+            Console.WriteLine("Press Enter to continue...");
+            Console.ReadLine();
         }
 
-        public static void ShowLoginFailure(string message)
+        public void ShowErrorMessage(string message)
         {
-            Console.WriteLine(message + "Returning to start menu...");
-            System.Threading.Thread.Sleep(2000);
-        }
-
-        public static void ShowSignUpSuccess(string message)
-        {
-            Console.WriteLine(message + "Returning to start menu...");
-            System.Threading.Thread.Sleep(2000);
-        }
-
-        public static void ShowSignUpFailure(string message)
-        {
-            Console.WriteLine(message + "Please try again...");
-            System.Threading.Thread.Sleep(2000);
+            Console.WriteLine($"Input error: {message}");
+            Console.WriteLine("Please correct the data and try again.");
+            Console.WriteLine("Press Enter to continue...");
+            Console.ReadLine();
         }
     }
 }

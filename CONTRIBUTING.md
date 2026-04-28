@@ -58,23 +58,67 @@ Atualizar documentação do projeto
 
 ---
 
-## Pull Requests
+## Validação e testes antes de contribuir
+
+Antes de submeter alterações através de Pull Request, cada elemento da equipa deve confirmar localmente que o projeto compila e que os testes automatizados existentes continuam a passar.
+
+### Compilar o projeto principal
+
+A partir da raiz do repositório:
+
+```powershell
+dotnet build .\src\Studio36\Studio36.csproj
+```
+
+### Executar a aplicação principal
+
+```powershell
+dotnet run --project .\src\Studio36\Studio36.csproj
+```
+
+### Executar um teste específico
+
+Quando necessário, pode ser executado apenas um teste através do respetivo identificador.
+
+Exemplo (para o teste T01 Apresentação do menu inicial):
+
+```powershell
+dotnet run --project .\tests\Studio36.Tests\Studio36.Tests.csproj -- T01
+```
+
+Testes atualmente disponíveis
+ID	Descrição
+T01	Apresentação do menu inicial
+T02	Terminar aplicação pela opção 3
+T03	Login com credenciais válidas
+T04	Login com credenciais inválidas
+T05	Acesso à opção de registo
+T06	Opção inválida no menu
+T07	Input não numérico no menu
+T08	Input vazio no menu
+T09	Model valida credenciais válidas
+T10	Model rejeita credenciais inválidas
+
+Ao executar um teste com sucesso, deverá ser apresentada uma mensagem de aprovação correspondente ao respetivo identificador.
+
+### Critério mínimo antes de abrir Pull Request
 
 Antes de abrir Pull Request para `develop`, confirmar que:
 
-- [ ] O código compila sem erros no Visual Studio
-- [ ] A funcionalidade implementada está de acordo com o planeado
-- [ ] A branch está atualizada em relação a `develop` e não tem conflitos por resolver
-- [ ] A descrição do Pull Request é clara e descreve o que foi alterado
-- [ ] A alteração foi minimamente validada pela equipa
+- [ ] O projeto compila sem erros
+- [ ] A aplicação executa corretamente
+- [ ] Os testes automatizados existentes passam com sucesso
+- [ ] A alteração realizada não quebra funcionalidades já implementadas
+- [ ] O código alterado respeita a arquitetura MVC definida para o projeto
+- [ ] A branch está atualizada em relação a `develop`
 
-Em caso de conflitos, estes devem ser resolvidos na branch de origem antes de o PR ser aceite.
+Caso algum teste falhe, a causa deve ser analisada e corrigida antes da submissão do Pull Request. Se a falha estiver relacionada com uma alteração intencional do comportamento da aplicação, o respetivo teste deve ser atualizado de forma coerente com a nova implementação.
 
 ---
 
 ## Regras gerais
 
-- Nunca fazer push direto para `main` ou `develop`
+- Nunca fazer push direto para `main`
 - Cada elemento desenvolve o seu trabalho na respetiva branch individual ou de funcionalidade
 - A integração em `main` deve ser sempre articulada com a líder de projeto e o verificador
 

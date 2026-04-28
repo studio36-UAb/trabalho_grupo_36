@@ -1,12 +1,7 @@
-﻿namespace Studio36.ViewComponent
+﻿using System;
+
+namespace Studio36.ViewComponent
 {
-    /*public enum StartMenuOption
-    {
-        Login,
-        SignUp,
-        Exit,
-        NotValid
-    }*/
     public class MainMenu
     {
         public void DisplayMenu()
@@ -20,8 +15,8 @@
 
         public string GetUserInput()
         {
-            Console.Write("Select an option: ");
-            return Console.ReadLine() ?? "";
+            Console.Write("Selection: ");
+            return (Console.ReadLine() ?? "").Trim();
         }
     }
 }
