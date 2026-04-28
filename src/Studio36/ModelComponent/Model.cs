@@ -1,29 +1,41 @@
-﻿using Studio36.ModelComponent.Services;
+﻿using System;
 
 namespace Studio36.ModelComponent
 {
     public class Model
     {
-        private readonly AuthenticationService _authenticationService;
+        public bool IsLoggedIn { get; set; } = false;
 
-        public event Action<LoginResult, string>? LoginEvaluated;
-        public event Action<SignUpResult, string>? SignUpEvaluated;
+        public event Action<bool>? SendLoginState;
 
         public Model()
         {
-            _authenticationService = new AuthenticationService("UsersAccounts.json");
         }
 
         public void AreCredentialsValid(string username, string password)
         {
-            var (loginResult, message) = _authenticationService.ValidateCredentials(username, password);
-            LoginEvaluated?.Invoke(loginResult, message);
+            ValidateLoginData(username, password);
+
+            IsLoggedIn = username == "teste@studio36.com" && password == "pass123";
+            SendLoginState?.Invoke(IsLoggedIn);
         }
 
-        public void RegisterUser(string username, string password)
+        private void ValidateLoginData(string username, string password)
         {
-            var (signUpResult, message) = _authenticationService.RegisterUser(username, password);
-            SignUpEvaluated?.Invoke(signUpResult, message);
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                throw new InvalidLoginDataException("The email cannot be empty.");
+            }
+
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                throw new InvalidLoginDataException("The password cannot be empty.");
+            }
+
+            if (!username.Contains("@"))
+            {
+                throw new InvalidLoginDataException("The email format is invalid.");
+            }
         }
     }
 }

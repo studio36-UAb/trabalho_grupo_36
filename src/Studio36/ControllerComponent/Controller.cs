@@ -1,6 +1,5 @@
 ﻿using Studio36.ModelComponent;
 using Studio36.ViewComponent;
-using Studio36.Utils;
 
 namespace Studio36.ControllerComponent
 {
@@ -9,119 +8,42 @@ namespace Studio36.ControllerComponent
         readonly Model model;
         readonly View view;
 
-        private MenuState _currentMenu = MenuState.StartMenu;
-
         public Controller()
         {
             model = new Model();
             view = new View();
 
-            view.StartMenuOptionSent += ProcessStartMenuOption;
-            model.LoginEvaluated += HandleLoginResult;
-            model.SignUpEvaluated += HandleSignUpResult;
+            view.UserAttemptLogin += ProcessLogin;
+            model.SendLoginState += OnLoginStateReceived;
+        }
+
+        private void OnLoginStateReceived(bool isLoggedIn)
+        {
+            view.ShowLoginResult(isLoggedIn);
         }
 
         public void StartProgram()
         {
-            RunStateMachine(); 
-        }
-
-        // State Machine to manage menu navigation. State changed by event handlers
-        private void RunStateMachine()
-        {
-            try
-            {
-                while (_currentMenu != MenuState.Exit)
-                {
-                    switch (_currentMenu)
-                    {
-                        case MenuState.StartMenu:
-                            view.RunStartMenu();
-                            break;
-
-                        case MenuState.MainMenu:
-                            view.RunMainMenu();
-                            _currentMenu = MenuState.StartMenu;
-                            break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("An error occur: " + ex.Message);
-            }
-            finally
-            {
-                Logger.EndSession();
-            }
-        }
-
-        void ProcessStartMenuOption(StartMenuOption menuOption)
-        {
-            StartMenu startMenu = new StartMenu();
-            switch (menuOption)
-            {
-                case StartMenuOption.Login:
-                    var (username, password) = startMenu.GetLoginData();
-                    ProcessLogin(username, password);
-                    break;
-                case StartMenuOption.SignUp:
-                    var (signUpUsername, signUpPassword) = startMenu.GetSignUpData();
-                    ProcessSignUp(signUpUsername, signUpPassword);
-                    break;
-                case StartMenuOption.Exit:
-                    _currentMenu = MenuState.Exit;
-                    break;
-                default:
-                    Console.WriteLine("Invalid option, try again.");
-                    _currentMenu = MenuState.StartMenu;
-                    break;
-            }
+            view.Run();
         }
 
         public void ProcessLogin(string username, string password)
         {
-            model.AreCredentialsValid(username, password);
-        }
-
-        public void ProcessSignUp(string username, string password)
-        {
-            model.RegisterUser(username, password);
-        }
-
-        private void HandleLoginResult(LoginResult loginResult, string message)
-        {
-            if (loginResult == LoginResult.Success)
+            try
             {
-                View.ShowLoginSuccess(message);
-                _currentMenu = MenuState.MainMenu;
+                model.AreCredentialsValid(username, password);
             }
-            else
+            catch (InvalidLoginDataException ex)
             {
-                View.ShowLoginFailure(message);
-                _currentMenu = MenuState.StartMenu;
+                view.ShowErrorMessage(ex.Message);
+            }
+            catch (Exception)
+            {
+                view.ShowErrorMessage("Unexpected error while processing login.");
             }
         }
 
-        private void HandleSignUpResult(SignUpResult signUpResult, string message)
-        {
-            switch (signUpResult)
-            {
-                case SignUpResult.Success:
-                    View.ShowSignUpSuccess(message);
-                    break;
-                case SignUpResult.UserAlreadyExists:
-                case SignUpResult.InvalidInput:
-                case SignUpResult.DatabaseError:
-                    View.ShowSignUpFailure(message);
-                    break;
-            }
-
-            _currentMenu = MenuState.StartMenu;
-        }
-
-
-        /*// AUTENTICAÇÃO
+        // AUTENTICAÇÃO
         public bool Login(string email, string password)
         {
             return false;
@@ -182,25 +104,5 @@ namespace Studio36.ControllerComponent
         public void GerarRelatorio(int idProjeto)
         {
         }
-        
-        public void printLoginResult(LoginResult result)
-        {
-            switch (result)
-            {
-                case LoginResult.Success:
-                    Console.WriteLine("\n[SUCCESS] Welcome back! Redirecting to dashboard...");
-                    break;
-                case LoginResult.InvalidCredentials:
-                    Console.WriteLine("\n[ERROR] Invalid username or password. Please try again.");
-                    break;
-                case LoginResult.DatabaseError:
-                    Console.WriteLine("\n[ERROR] A database error occurred. Please contact support.");
-                    break;
-            }
-
-            Console.WriteLine("Press any key to continue...");
-            Console.ReadKey();
-        }
-         */
     }
 }

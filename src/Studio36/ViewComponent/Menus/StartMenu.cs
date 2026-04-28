@@ -1,4 +1,6 @@
-﻿namespace Studio36.ViewComponent
+﻿using System;
+
+namespace Studio36.ViewComponent
 {
     public enum StartMenuOption
     {
@@ -22,8 +24,8 @@
 
         public string GetUserInput()
         {
-            Console.Write("Select an option: ");
-            return Console.ReadLine() ?? "";
+            Console.Write("Selection: ");
+            return (Console.ReadLine() ?? "").Trim();
         }
 
         public StartMenuOption GetMenuOption(string menuOption)
@@ -37,27 +39,26 @@
             };
         }
 
-        public (string username, string password) GetLoginData()
+        public (string email, string password) GetLoginData()
         {
-            Console.Write("Please enter your Username: ");
-            string username = Console.ReadLine() ?? "";
+            Console.Write("Please enter your email: ");
+            string email = (Console.ReadLine() ?? "").Trim();
 
-            Console.Write("Please enter your Password: ");
-            string password = Console.ReadLine() ?? "";
+            Console.Write("Please enter your password: ");
+            string password = (Console.ReadLine() ?? "").Trim();
 
-            return (username, password);
+            return (email, password);
         }
 
-        public (string username, string password) GetSignUpData()
+        public (string email, string password) GetSignUpData()
         {
-            Console.Write("Please enter your Username: ");
-            string username = Console.ReadLine() ?? "";
+            Console.Write("Please enter your email: ");
+            string email = (Console.ReadLine() ?? "").Trim();
 
-            Console.Write("Please enter your Password: "); // Maybe add password confirmation in the future
-            string password = Console.ReadLine() ?? "";
+            Console.Write("Please enter your password: ");
+            string password = (Console.ReadLine() ?? "").Trim();
 
-            return (username, password);
+            return (email, password);
         }
-
     }
 }
