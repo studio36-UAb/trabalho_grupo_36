@@ -1,37 +1,43 @@
-﻿using Studio36.ViewComponent.Menus;
+﻿using System;
 
 namespace Studio36.ViewComponent
 {
     public class View
     {
         private bool isRunning = true;
+        private readonly StartMenu startMenu;
 
         public event Action<string, string>? UserAttemptLogin;
 
         public View()
         {
+            startMenu = new StartMenu();
         }
 
         public void Run()
         {
             while (isRunning)
             {
-                Menu.ShowPublicMenu();
-                string userInput = (Console.ReadLine() ?? "").Trim();
+                startMenu.DisplayMenu();
+                string userInput = (startMenu.GetUserInput() ?? "").Trim();
+                StartMenuOption selectedOption = startMenu.GetMenuOption(userInput);
 
-                switch (userInput)
+                switch (selectedOption)
                 {
-                    case "1":
+                    case StartMenuOption.Login:
                         var credentials = GetLoginData();
                         UserAttemptLogin?.Invoke(credentials.email, credentials.password);
                         break;
-                    case "2":
+
+                    case StartMenuOption.SignUp:
                         Console.WriteLine("Sign up not implemented yet.");
                         break;
-                    case "3":
+
+                    case StartMenuOption.Exit:
                         isRunning = false;
                         Console.WriteLine("Goodbye!");
                         break;
+
                     default:
                         Console.WriteLine("Invalid option, try again.");
                         break;
@@ -41,11 +47,10 @@ namespace Studio36.ViewComponent
 
         private (string email, string password) GetLoginData()
         {
-            Console.WriteLine("Please enter your email:");
-            string email = (Console.ReadLine() ?? "").Trim();
+            var credentials = startMenu.GetLoginData();
 
-            Console.WriteLine("Please enter your password:");
-            string password = (Console.ReadLine() ?? "").Trim();
+            string email = (credentials.email ?? "").Trim();
+            string password = (credentials.password ?? "").Trim();
 
             return (email, password);
         }
@@ -60,12 +65,17 @@ namespace Studio36.ViewComponent
             {
                 Console.WriteLine("Login failed. Please check your credentials and try again.");
             }
+
+            Console.WriteLine("Press Enter to continue...");
+            Console.ReadLine();
         }
 
         public void ShowErrorMessage(string message)
         {
             Console.WriteLine($"Input error: {message}");
             Console.WriteLine("Please correct the data and try again.");
+            Console.WriteLine("Press Enter to continue...");
+            Console.ReadLine();
         }
     }
 }
