@@ -27,7 +27,7 @@ A fase de análise e arquitetura preliminar produziu o seguinte:
 - Análise da API de negócio e proposta de aplicação-demonstradora
 - Plano de verificações v2
 
-A implementação da aplicação está em curso desde abril de 2026. A estrutura base está criada com a separação entre as trÊs camadas MVC - Model, View e Controller - comunicando exclusivamente através de eventos e delegados, sem dependências diretas entre View e Model.
+A implementação da aplicação está em curso desde abril de 2026. A estrutura base está criada com a separação entre as três camadas MVC — Model, View e Controller — comunicando exclusivamente através de eventos e delegados, sem dependências diretas entre View e Model.
 
 ---
 
@@ -66,6 +66,72 @@ A implementação da aplicação está em curso desde abril de 2026. A estrutura
 ```
 
 ---
+
+## Execução da aplicação
+
+Para executar a aplicação principal, deve ser usado o projeto localizado em `src/Studio36`.
+
+A partir da raiz do repositório:
+
+```powershell
+dotnet run --project .\src\Studio36\Studio36.csproj
+
+```
+---
+
+## Testes automatizados
+
+O projeto inclui uma aplicação de consola independente para execução de testes automatizados, localizada em tests/Studio36.Tests.
+
+Estes testes validam o comportamento atualmente implementado na aplicação, nomeadamente a apresentação do menu inicial, a saída da aplicação, o fluxo básico de autenticação, o acesso à opção de registo e o tratamento de entradas inválidas.
+
+## Executar todos os testes
+
+A partir da raiz do repositório:
+
+```powershell
+dotnet run --project .\tests\Studio36.Tests\Studio36.Tests.csproj
+```
+
+## Executar um teste específico
+
+Cada teste pode ser executado individualmente através do respetivo identificador.
+
+Exemplo para executar apenas o teste T01:
+
+```powershell
+dotnet run --project .\tests\Studio36.Tests\Studio36.Tests.csproj -- T01
+```
+
+Testes atualmente disponíveis
+ID	Descrição
+T01	Apresentação do menu inicial
+T02	Terminar aplicação pela opção 3
+T03	Login com credenciais válidas
+T04	Login com credenciais inválidas
+T05	Acesso à opção de registo
+T06	Opção inválida no menu
+T07	Input não numérico no menu
+T08	Input vazio no menu
+T09	Model valida credenciais válidas
+T10	Model rejeita credenciais inválidas
+Resultado esperado
+
+Quando todos os testes passam corretamente, deverá ser apresentada uma saída semelhante à seguinte:
+
+PASS T01 - Apresentacao do menu inicial
+PASS T02 - Terminar aplicacao pela opcao 3
+PASS T03 - Login com credenciais validas
+PASS T04 - Login com credenciais invalidas
+PASS T05 - Acesso a opcao de registo
+PASS T06 - Opcao invalida no menu
+PASS T07 - Input nao numerico no menu
+PASS T08 - Input vazio no menu
+PASS T09 - Model valida credenciais validas
+PASS T10 - Model rejeita credenciais invalidas
+All tests passed.
+
+Nesta fase, os testes incidem apenas sobre funcionalidades já implementadas. Funcionalidades futuras, como gestão de projetos, tarefas, membros, persistência em JSON e geração de relatórios PDF, deverão ser testadas quando a respetiva implementação estiver concluída.
 
 ## Modelo de desenvolvimento
 
@@ -132,7 +198,9 @@ Atualizar documentação do projeto
 
 Antes de abrir Pull Request para `develop`, confirmar que:
 
-- [ ] O código compila sem erros no Visual Studio
+- [ ] O código compila sem erros no Visual Studio ou através de `dotnet build`
+- [ ] A aplicação executa corretamente através de `dotnet run`
+- [ ] Os testes automatizados existentes passam com sucesso
 - [ ] A funcionalidade implementada está de acordo com o planeado
 - [ ] A branch está atualizada em relação a `develop` e não tem conflitos por resolver
 - [ ] A alteração foi minimamente validada pela equipa
