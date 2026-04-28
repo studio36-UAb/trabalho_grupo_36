@@ -12,8 +12,28 @@
 
         public void AreCredentialsValid(string username, string password)
         {
-            IsLoggedIn = username == "Hey" && password == "Hey2";
+            ValidateLoginData(username, password);
+
+            IsLoggedIn = username == "teste@studio36.com" && password == "pass123";
             SendLoginState?.Invoke(IsLoggedIn);
+        }
+
+        private void ValidateLoginData(string username, string password)
+        {
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                throw new InvalidLoginDataException("The email cannot be empty.");
+            }
+
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                throw new InvalidLoginDataException("The password cannot be empty.");
+            }
+
+            if (!username.Contains("@"))
+            {
+                throw new InvalidLoginDataException("The email format is invalid.");
+            }
         }
     }
 }

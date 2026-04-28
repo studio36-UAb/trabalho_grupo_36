@@ -29,7 +29,18 @@ namespace Studio36.ControllerComponent
 
         public void ProcessLogin(string username, string password)
         {
-            model.AreCredentialsValid(username, password);
+            try
+            {
+                model.AreCredentialsValid(username, password);
+            }
+            catch (InvalidLoginDataException ex)
+            {
+                view.ShowErrorMessage(ex.Message);
+            }
+            catch (Exception)
+            {
+                view.ShowErrorMessage("Unexpected error while processing login.");
+            }
         }
 
         // AUTENTICAÇÃO
