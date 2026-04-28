@@ -11,7 +11,7 @@ public static class T09_ModelLoginValido
 
         model.SendLoginState += isLoggedIn => eventValue = isLoggedIn;
 
-        model.AreCredentialsValid("Hey", "Hey2");
+        model.AreCredentialsValid("teste@studio36.com", "pass123");
 
         TestHelper.AssertTrue(model.IsLoggedIn, "The model should mark the user as logged in.");
         TestHelper.AssertTrue(eventValue == true, "The model should emit a successful login event.");

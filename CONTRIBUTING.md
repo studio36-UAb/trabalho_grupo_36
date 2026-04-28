@@ -76,21 +76,30 @@ dotnet build .\src\Studio36\Studio36.csproj
 dotnet run --project .\src\Studio36\Studio36.csproj
 ```
 
-### Executar todos os testes automatizados
-
-```powershell
-dotnet run --project .\tests\Studio36.Tests\Studio36.Tests.csproj
-```
-
 ### Executar um teste específico
 
 Quando necessário, pode ser executado apenas um teste através do respetivo identificador.
 
-Exemplo:
+Exemplo (para o teste T01 Apresentação do menu inicial):
 
 ```powershell
 dotnet run --project .\tests\Studio36.Tests\Studio36.Tests.csproj -- T01
 ```
+
+Testes atualmente disponíveis
+ID	Descrição
+T01	Apresentação do menu inicial
+T02	Terminar aplicação pela opção 3
+T03	Login com credenciais válidas
+T04	Login com credenciais inválidas
+T05	Acesso à opção de registo
+T06	Opção inválida no menu
+T07	Input não numérico no menu
+T08	Input vazio no menu
+T09	Model valida credenciais válidas
+T10	Model rejeita credenciais inválidas
+
+Ao executar um teste com sucesso, deverá ser apresentada uma mensagem de aprovação correspondente ao respetivo identificador.
 
 ### Critério mínimo antes de abrir Pull Request
 

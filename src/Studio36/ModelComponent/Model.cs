@@ -1,4 +1,6 @@
-﻿namespace Studio36.ModelComponent
+﻿using System;
+
+namespace Studio36.ModelComponent
 {
     public class Model
     {

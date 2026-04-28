@@ -11,7 +11,7 @@ public static class T10_ModelLoginInvalido
 
         model.SendLoginState += isLoggedIn => eventValue = isLoggedIn;
 
-        model.AreCredentialsValid("wrong", "bad");
+        model.AreCredentialsValid("teste@studio36.com", "bad");
 
         TestHelper.AssertFalse(model.IsLoggedIn, "The model should not mark the user as logged in.");
         TestHelper.AssertTrue(eventValue == false, "The model should emit a failed login event.");

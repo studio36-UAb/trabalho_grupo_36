@@ -93,11 +93,11 @@ A partir da raiz do repositório:
 dotnet run --project .\tests\Studio36.Tests\Studio36.Tests.csproj
 ```
 
-## Executar um teste específico
+### Executar um teste específico
 
-Cada teste pode ser executado individualmente através do respetivo identificador.
+Quando necessário, pode ser executado apenas um teste através do respetivo identificador.
 
-Exemplo para executar apenas o teste T01:
+Exemplo (para o teste T01 Apresentação do menu inicial):
 
 ```powershell
 dotnet run --project .\tests\Studio36.Tests\Studio36.Tests.csproj -- T01
@@ -115,21 +115,8 @@ T07	Input não numérico no menu
 T08	Input vazio no menu
 T09	Model valida credenciais válidas
 T10	Model rejeita credenciais inválidas
-Resultado esperado
 
-Quando todos os testes passam corretamente, deverá ser apresentada uma saída semelhante à seguinte:
-
-PASS T01 - Apresentacao do menu inicial
-PASS T02 - Terminar aplicacao pela opcao 3
-PASS T03 - Login com credenciais validas
-PASS T04 - Login com credenciais invalidas
-PASS T05 - Acesso a opcao de registo
-PASS T06 - Opcao invalida no menu
-PASS T07 - Input nao numerico no menu
-PASS T08 - Input vazio no menu
-PASS T09 - Model valida credenciais validas
-PASS T10 - Model rejeita credenciais invalidas
-All tests passed.
+Ao executar um teste com sucesso, deverá ser apresentada uma mensagem de aprovação correspondente ao respetivo identificador.
 
 Nesta fase, os testes incidem apenas sobre funcionalidades já implementadas. Funcionalidades futuras, como gestão de projetos, tarefas, membros, persistência em JSON e geração de relatórios PDF, deverão ser testadas quando a respetiva implementação estiver concluída.
 
