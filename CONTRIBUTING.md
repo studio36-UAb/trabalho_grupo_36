@@ -116,11 +116,11 @@ Caso algum teste falhe, a causa deve ser analisada e corrigida antes da submiss�
 
 ---
 
-## Regras gerais
+## ### Regra de integração
 
-- Nunca fazer push direto para `main`
-- Cada elemento desenvolve o seu trabalho na respetiva branch individual ou de funcionalidade
-- A integração em `main` deve ser sempre articulada com a líder de projeto e o verificador
+É obrigatória a utilização de **Pull Request** para integração de alterações na branch `develop`.
+
+Não devem ser realizados merges diretos para `develop` sem revisão, aprovação e validação prévia das alterações.
 
 ---
 
