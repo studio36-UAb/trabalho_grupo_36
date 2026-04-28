@@ -6,10 +6,9 @@ namespace Studio36.ViewComponent
     {
         private bool isRunning = true;
 
-        // Events
         public event Action<string, string>? UserAttemptLogin;
 
-       public View()
+        public View()
         {
         }
 
@@ -18,7 +17,7 @@ namespace Studio36.ViewComponent
             while (isRunning)
             {
                 Menu.ShowPublicMenu();
-                string userInput = Console.ReadLine() ?? "";
+                string userInput = (Console.ReadLine() ?? "").Trim();
 
                 switch (userInput)
                 {
@@ -43,13 +42,14 @@ namespace Studio36.ViewComponent
         private (string email, string password) GetLoginData()
         {
             Console.WriteLine("Please enter your email:");
-            string email = Console.ReadLine() ?? "";
+            string email = (Console.ReadLine() ?? "").Trim();
 
             Console.WriteLine("Please enter your password:");
-            string password = Console.ReadLine() ?? "";
+            string password = (Console.ReadLine() ?? "").Trim();
 
             return (email, password);
         }
+
         public void ShowLoginResult(bool isLoggedIn)
         {
             if (isLoggedIn)
@@ -58,11 +58,14 @@ namespace Studio36.ViewComponent
             }
             else
             {
-                Console.WriteLine("Login failed.");
+                Console.WriteLine("Login failed. Please check your credentials and try again.");
             }
         }
 
-
-
+        public void ShowErrorMessage(string message)
+        {
+            Console.WriteLine($"Input error: {message}");
+            Console.WriteLine("Please correct the data and try again.");
+        }
     }
 }
