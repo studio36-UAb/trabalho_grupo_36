@@ -8,12 +8,18 @@ public static class T10_ModelLoginInvalido
     {
         Model model = new();
         bool? eventValue = null;
+        string? eventMessage = null;
 
-        model.SendLoginState += isLoggedIn => eventValue = isLoggedIn;
+        model.SendLoginState += (isLoggedIn, message) =>
+        {
+            eventValue = isLoggedIn;
+            eventMessage = message;
+        };
 
-        model.AreCredentialsValid("teste@studio36.com", "bad");
+        model.AreCredentialsValid("admin", "wrong");
 
         TestHelper.AssertFalse(model.IsLoggedIn, "The model should not mark the user as logged in.");
         TestHelper.AssertTrue(eventValue == false, "The model should emit a failed login event.");
+        TestHelper.AssertTrue(eventMessage == "Invalid password.", "The model should emit the correct failure message.");
     }
 }
