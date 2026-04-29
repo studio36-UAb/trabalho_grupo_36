@@ -4,10 +4,11 @@ public static class T03_LoginValido
 {
     public static void Run()
     {
-        string output = TestHelper.RunApplication("1\nteste@studio36.com\npass123\n\n3");
+        string output = TestHelper.RunApplication("1\nadmin\nadmin123\n\n2\n3");
 
-        TestHelper.AssertContains(output, "Please enter your email:");
+        TestHelper.AssertContains(output, "Please enter your username:");
         TestHelper.AssertContains(output, "Please enter your password:");
-        TestHelper.AssertContains(output, "The user is logged in. Updating UI...");
+        TestHelper.AssertContains(output, "Login successful.");
+        TestHelper.AssertContains(output, "Main Menu!");
     }
 }
