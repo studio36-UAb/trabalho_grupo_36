@@ -41,7 +41,7 @@ namespace Studio36.ViewComponent
 
         public (string email, string password) GetLoginData()
         {
-            Console.Write("Please enter your email: ");
+            Console.Write("Please enter your username: ");
             string email = (Console.ReadLine() ?? "").Trim();
 
             Console.Write("Please enter your password: ");
@@ -52,7 +52,7 @@ namespace Studio36.ViewComponent
 
         public (string email, string password) GetSignUpData()
         {
-            Console.Write("Please enter your email: ");
+            Console.Write("Please enter your username: ");
             string email = (Console.ReadLine() ?? "").Trim();
 
             Console.Write("Please enter your password: ");

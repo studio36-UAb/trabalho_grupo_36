@@ -14,12 +14,20 @@ namespace Studio36.ControllerComponent
             view = new View();
 
             view.UserAttemptLogin += ProcessLogin;
+            view.UserAttemptSignUp += ProcessSignUp;
+
             model.SendLoginState += OnLoginStateReceived;
+            model.SendSignUpState += OnSignUpStateReceived;
         }
 
-        private void OnLoginStateReceived(bool isLoggedIn)
+        private void OnLoginStateReceived(bool isLoggedIn, string message)
         {
-            view.ShowLoginResult(isLoggedIn);
+            view.ShowLoginResult(isLoggedIn, message);
+        }
+
+        private void OnSignUpStateReceived(bool success, string message)
+        {
+            view.ShowSignUpResult(success, message);
         }
 
         public void StartProgram()
@@ -40,6 +48,18 @@ namespace Studio36.ControllerComponent
             catch (Exception)
             {
                 view.ShowErrorMessage("Unexpected error while processing login.");
+            }
+        }
+
+        public void ProcessSignUp(string username, string password)
+        {
+            try
+            {
+                model.RegisterUser(username, password);
+            }
+            catch (Exception)
+            {
+                view.ShowErrorMessage("Unexpected error while processing sign up.");
             }
         }
 

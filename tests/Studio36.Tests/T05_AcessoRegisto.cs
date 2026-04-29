@@ -4,8 +4,10 @@ public static class T05_AcessoRegisto
 {
     public static void Run()
     {
-        string output = TestHelper.RunApplication("2\n3");
+        string output = TestHelper.RunApplication("2\nadmin\npass123\n\n3");
 
-        TestHelper.AssertContains(output, "Sign up not implemented yet.");
+        TestHelper.AssertContains(output, "Please enter your username:");
+        TestHelper.AssertContains(output, "Please enter your password:");
+        TestHelper.AssertContains(output, "Username already taken. Please choose another.");
     }
 }

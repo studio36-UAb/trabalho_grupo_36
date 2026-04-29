@@ -4,7 +4,7 @@ public static class T07_InputNaoNumerico
 {
     public static void Run()
     {
-        string output = TestHelper.RunApplication("abc\n3");
+        string output = TestHelper.RunApplication("abc\n\n3");
 
         TestHelper.AssertContains(output, "Invalid option, try again.");
         TestHelper.AssertContains(output, "Goodbye!");
