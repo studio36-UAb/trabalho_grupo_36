@@ -9,4 +9,11 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Studio36\Studio36.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\UsersDatabase\UsersAccounts.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>UsersDatabase\UsersAccounts.json</TargetPath>
+    </Content>
+  </ItemGroup>
 </Project>
