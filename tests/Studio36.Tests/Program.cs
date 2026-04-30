@@ -33,25 +33,53 @@ if (args.Length > 0)
 }
 
 int failed = 0;
+List<string> passedTests = new();
+List<string> failedTests = new();
 
 foreach (TestCase test in tests)
 {
     try
     {
         test.Run();
-        Console.WriteLine($"PASS {test.Id} - {test.Description}");
+        passedTests.Add($"{test.Id} - {test.Description}");
     }
     catch (Exception ex)
     {
         failed++;
-        Console.WriteLine($"FAIL {test.Id} - {test.Description}: {ex.Message}");
+        failedTests.Add($"{test.Id} - {test.Description}: {ex.Message}");
     }
 }
 
+Console.WriteLine("\n========================================");
+Console.WriteLine("TEST SUMMARY");
+Console.WriteLine("========================================");
+Console.WriteLine($"Total: {tests.Count} | Passed: {passedTests.Count} | Failed: {failedTests.Count}");
+
+if (passedTests.Count > 0)
+{
+    Console.WriteLine("\nPassed tests:");
+    foreach (var test in passedTests)
+    {
+        Console.WriteLine($"  ✓ {test}");
+    }
+}
+
+if (failedTests.Count > 0)
+{
+    Console.WriteLine("\nFailed tests:");
+    foreach (var test in failedTests)
+    {
+        Console.WriteLine($"  ✗ {test}");
+    }
+}
+
+Console.WriteLine("========================================");
+
 if (failed > 0)
 {
-    Console.WriteLine($"{failed} test(s) failed.");
+    Console.WriteLine($"\n{failed} test(s) failed.");
     Environment.Exit(1);
 }
 
-Console.WriteLine("All tests passed.");
+Console.WriteLine("\n✓ All tests passed!");
+
