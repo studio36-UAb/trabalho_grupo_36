@@ -18,8 +18,11 @@ namespace Studio36.ControllerComponent
             view.UserAttemptLogin += ProcessLogin;
             view.UserAttemptSignUp += ProcessSignUp;
 
+            view.UserRequestsProjectTasks += ProcessProjectTasksRequest;
+
             model.SendLoginState += OnLoginStateReceived;
             model.SendSignUpState += OnSignUpStateReceived;
+
         }
 
         private void OnLoginStateReceived(bool isLoggedIn, string message)
@@ -30,6 +33,11 @@ namespace Studio36.ControllerComponent
         private void OnSignUpStateReceived(bool success, string message)
         {
             view.ShowSignUpResult(success, message);
+        }
+
+        private void ProcessProjectTasksRequest(int idProjeto)
+        {
+            ListarTarefas(idProjeto);
         }
 
         public void StartProgram()
