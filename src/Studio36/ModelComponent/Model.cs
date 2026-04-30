@@ -5,6 +5,15 @@ namespace Studio36.ModelComponent
 {
     public class Model
     {
+        private readonly Dictionary<int, string> projetos = new()
+        {
+            { 1, "Projeto de demonstração" }
+        };
+
+        private readonly Dictionary<int, List<string>> tarefasPorProjeto = new()
+        {
+            { 1, new List<string> { "Definir arquitetura MVC", "Validar tratamento de erros" } }
+        };
         private readonly AuthenticationService authenticationService;
 
         public bool IsLoggedIn { get; set; } = false;
@@ -46,6 +55,31 @@ namespace Studio36.ModelComponent
             {
                 throw new InvalidLoginDataException("The password cannot be empty.");
             }
+        }
+
+        public List<string> GetTasksByProject(int idProjeto)
+        {
+            // Verifica se o projeto existe no estado atual do Model.
+            if (!projetos.ContainsKey(idProjeto))
+            {
+                throw new ProjectNotFoundException(idProjeto);
+            }
+
+            // Se o projeto existe mas ainda não tem tarefas, devolve uma lista vazia.
+            if (!tarefasPorProjeto.ContainsKey(idProjeto))
+            {
+                return new List<string>();
+            }
+
+            return tarefasPorProjeto[idProjeto];
+        }
+
+        public List<string> GetProjects()
+        {
+            // Devolve a lista atualizada de projetos existentes no Model.
+            return projetos
+                .Select(projeto => $"{projeto.Key} - {projeto.Value}")
+                .ToList();
         }
     }
 }

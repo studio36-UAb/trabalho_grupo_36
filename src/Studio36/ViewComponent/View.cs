@@ -124,5 +124,43 @@ namespace Studio36.ViewComponent
             Console.WriteLine("Press Enter to continue...");
             Console.ReadLine();
         }
+
+        public void ShowTaskList(List<string> tarefas)
+        {
+            Console.WriteLine("Lista de tarefas:");
+
+            if (tarefas.Count == 0)
+            {
+                Console.WriteLine("Não existem tarefas associadas a este projeto.");
+            }
+            else
+            {
+                foreach (string tarefa in tarefas)
+                {
+                    Console.WriteLine($"- {tarefa}");
+                }
+            }
+
+            Pause();
+        }
+
+        public void RefreshProjectList(List<string> listaProjetos)
+        {
+            Console.WriteLine("Lista atualizada de projetos:");
+
+            if (listaProjetos.Count == 0)
+            {
+                Console.WriteLine("Não existem projetos disponíveis.");
+            }
+            else
+            {
+                foreach (string projeto in listaProjetos)
+                {
+                    Console.WriteLine(projeto);
+                }
+            }
+
+            Pause();
+        }
     }
 }
