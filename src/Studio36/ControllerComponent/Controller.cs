@@ -7,11 +7,13 @@ namespace Studio36.ControllerComponent
     {
         readonly Model model;
         readonly View view;
+        readonly ModelLog modelLog;
 
         public Controller()
         {
             model = new Model();
             view = new View();
+            modelLog = new ModelLog();
 
             view.UserAttemptLogin += ProcessLogin;
             view.UserAttemptSignUp += ProcessSignUp;
@@ -99,7 +101,28 @@ namespace Studio36.ControllerComponent
 
         public List<string> ListarTarefas(int idProjeto)
         {
-            return new List<string>();
+            try
+            {
+                List<string> tarefas = model.GetTasksByProject(idProjeto);
+                view.ShowTaskList(tarefas);
+                return tarefas;
+            }
+            catch (ProjectNotFoundException ex)
+            {
+                modelLog.RegistarLog(ex, idProjeto);
+
+                List<string> listaProjetos = model.GetProjects();
+
+                view.ShowErrorMessage(ex.Message);
+                view.RefreshProjectList(listaProjetos);
+
+                return new List<string>();
+            }
+            catch (Exception)
+            {
+                view.ShowErrorMessage("Erro inesperado ao listar tarefas do projeto.");
+                return new List<string>();
+            }
         }
 
         public void EditarTarefa(int idTarefa, string nome, string descricao)
