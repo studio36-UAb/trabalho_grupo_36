@@ -10,7 +10,8 @@ namespace Studio36.ViewComponent
             Console.WriteLine("\nMain Menu!");
             Console.WriteLine("Please select an option:");
             Console.WriteLine("1. New Project");
-            Console.WriteLine("2. Back");
+            Console.WriteLine("2. List tasks by project");
+            Console.WriteLine("3. Back");
             Console.Write("Selection: ");
         }
 
