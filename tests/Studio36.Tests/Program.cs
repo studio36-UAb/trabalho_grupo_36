@@ -11,7 +11,9 @@ List<TestCase> tests = new()
     new("T07", "Input nao numerico no menu", T07_InputNaoNumerico.Run),
     new("T08", "Input vazio no menu", T08_InputVazio.Run),
     new("T09", "Model valida credenciais validas", T09_ModelLoginValido.Run),
-    new("T10", "Model rejeita credenciais invalidas", T10_ModelLoginInvalido.Run)
+    new("T10", "Model rejeita credenciais invalidas", T10_ModelLoginInvalido.Run),
+    new("T26", "Listar tarefas de projeto inexistente", T26_ProjectNotFound.Run),
+    new("T27", "Introduzir ID de projeto nao numerico na listagem de tarefas", T27_ProjectIdNaoNumerico.Run)
 };
 
 if (args.Length > 0)
@@ -82,4 +84,3 @@ if (failed > 0)
 }
 
 Console.WriteLine("\n✓ All tests passed!");
-
