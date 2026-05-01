@@ -76,6 +76,14 @@ dotnet build .\src\Studio36\Studio36.csproj
 dotnet run --project .\src\Studio36\Studio36.csproj
 ```
 
+## Executar todos os testes
+
+A partir da raiz do repositório:
+
+```powershell
+dotnet run --project .\tests\Studio36.Tests\Studio36.Tests.csproj
+```
+
 ### Executar um teste específico
 
 Quando necessário, pode ser executado apenas um teste através do respetivo identificador.
