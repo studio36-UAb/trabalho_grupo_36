@@ -143,6 +143,13 @@ namespace Studio36.ViewComponent
             {
                 Console.WriteLine("There are no projects available.");
             }
+            else
+            {
+                foreach (string projeto in listaProjetos)
+                {
+                    Console.WriteLine(projeto);
+                }
+            }
 
             Pause();
         }
@@ -168,8 +175,8 @@ namespace Studio36.ViewComponent
 
         private void Pause()
         {
-            Console.WriteLine("\nPress any key to continue...");
-            Console.ReadKey();
+            Console.WriteLine("\nPress Enter to continue...");
+            Console.ReadLine();
         }
     }
 }
