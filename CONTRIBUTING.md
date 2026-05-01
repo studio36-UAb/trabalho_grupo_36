@@ -98,8 +98,12 @@ T07	Input não numérico no menu
 T08	Input vazio no menu
 T09	Model valida credenciais válidas
 T10	Model rejeita credenciais inválidas
+T26	Listar tarefas de projeto inexistente
+T27	Introduzir ID de projeto não numérico na listagem de tarefas
 
 Ao executar um teste com sucesso, deverá ser apresentada uma mensagem de aprovação correspondente ao respetivo identificador.
+
+Os testes T26 e T27 cobrem o fluxo de listagem de tarefas por projeto. O T26 valida o tratamento de `ProjectNotFoundException`, incluindo mensagem de erro, registo em log e apresentação da lista atualizada de projetos. O T27 valida a rejeição de IDs de projeto não numéricos, garantindo que a aplicação continua em execução.
 
 ### Critério mínimo antes de abrir Pull Request
 
@@ -110,6 +114,7 @@ Antes de abrir Pull Request para `develop`, confirmar que:
 - [ ] Os testes automatizados existentes passam com sucesso
 - [ ] A alteração realizada não quebra funcionalidades já implementadas
 - [ ] O código alterado respeita a arquitetura MVC definida para o projeto
+- [ ] Novos fluxos de erro ou exceções relevantes têm testes automatizados associados, sempre que possível
 - [ ] A branch está atualizada em relação a `develop`
 
 Caso algum teste falhe, a causa deve ser analisada e corrigida antes da submissão do Pull Request. Se a falha estiver relacionada com uma alteração intencional do comportamento da aplicação, o respetivo teste deve ser atualizado de forma coerente com a nova implementação.
@@ -132,6 +137,7 @@ O projeto sgue o padrão MVC. Para manter o acoplamento baixo devem ser respeita
 - O **Model não pode depender da View** - não deve importar o namespace `ViewComponent`
 - Toda a comunicação entre Model e View é feita **exclusivamente através de eventos**, com os parâmetros necessarios incluidos no proprio evento
 - O **Controller é o único intermediário** - subscreve os eventos do Model e chama os métodos públicos da View para atualizar o ecrã
+- Exceções do Model, como `ProjectNotFoundException`, devem ser tratadas no Controller, que decide que mensagens e atualizações devem ser enviadas para a View
 
 ### Exemplo correto de eventos com dados
 

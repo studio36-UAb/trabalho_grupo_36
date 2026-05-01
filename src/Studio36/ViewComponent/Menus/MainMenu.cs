@@ -6,7 +6,7 @@ namespace Studio36.ViewComponent
     {
         public void DisplayMenu()
         {
-            Console.Clear();
+            ClearScreen();
             Console.WriteLine("\nMain Menu!");
             Console.WriteLine("Please select an option:");
             Console.WriteLine("1. New Project");
@@ -18,7 +18,25 @@ namespace Studio36.ViewComponent
         public string GetUserInput()
         {
             Console.Write("Selection: ");
-            return (Console.ReadLine() ?? "").Trim();
+            string? input = Console.ReadLine();
+
+            if (input == null)
+            {
+                return "3";
+            }
+
+            return input.Trim();
+        }
+
+        private static void ClearScreen()
+        {
+            try
+            {
+                Console.Clear();
+            }
+            catch (IOException)
+            {
+            }
         }
     }
 }
