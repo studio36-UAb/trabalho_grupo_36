@@ -14,7 +14,7 @@ namespace Studio36.ViewComponent
     {
         public void DisplayMenu()
         {
-            Console.Clear();
+            ClearScreen();
             Console.WriteLine("Welcome to Studio36!");
             Console.WriteLine("Please select an option:");
             Console.WriteLine("1. Log in");
@@ -25,7 +25,14 @@ namespace Studio36.ViewComponent
         public string GetUserInput()
         {
             Console.Write("Selection: ");
-            return (Console.ReadLine() ?? "").Trim();
+            string? input = Console.ReadLine();
+
+            if (input == null)
+            {
+                return "3";
+            }
+
+            return input.Trim();
         }
 
         public StartMenuOption GetMenuOption(string menuOption)
@@ -59,6 +66,17 @@ namespace Studio36.ViewComponent
             string password = (Console.ReadLine() ?? "").Trim();
 
             return (email, password);
+        }
+
+        private static void ClearScreen()
+        {
+            try
+            {
+                Console.Clear();
+            }
+            catch (IOException)
+            {
+            }
         }
     }
 }
