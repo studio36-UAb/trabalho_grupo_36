@@ -1,4 +1,5 @@
 ﻿using System;
+using Studio36.DTOs;
 using Studio36.ModelComponent.Services;
 
 namespace Studio36.ModelComponent
@@ -18,42 +19,40 @@ namespace Studio36.ModelComponent
 
         public bool IsLoggedIn { get; set; } = false;
 
-        public event Action<bool, string>? SendLoginState;
-        public event Action<bool, string>? SendSignUpState;
+        public event Action<LoginResultData>? SendLoginState;
+        public event Action<SignUpResultData>? SendSignUpState;
 
         public Model()
         {
             authenticationService = new AuthenticationService(@"UsersDatabase/UsersAccounts.json");
         }
 
-        public void AreCredentialsValid(string username, string password)
+        public void AreCredentialsValid(LoginRequestData request)
         {
-            ValidateLoginData(username, password);
+            ValidateLoginInput(request.Email, request.Password);
 
-            (LoginResult result, string message) = authenticationService.ValidateCredentials(username, password);
+            (LoginResult result, string message) = authenticationService.VerifyCredentials(request.Email, request.Password);
 
-            IsLoggedIn = result == LoginResult.Success;
-            SendLoginState?.Invoke(IsLoggedIn, message);
+            SendLoginState?.Invoke(new LoginResultData(result == LoginResult.Success, message));
         }
 
-        public void RegisterUser(string username, string password)
+        public void RegisterUser(SignUpRequestData request)
         {
-            (SignUpResult result, string message) = authenticationService.RegisterUser(username, password);
+            (SignUpResult result, string message) = authenticationService.RegisterUser(request.Email, request.Password);
 
-            bool success = result == SignUpResult.Success;
-            SendSignUpState?.Invoke(success, message);
+            SendSignUpState?.Invoke(new SignUpResultData(result == SignUpResult.Success, message));
         }
 
-        private void ValidateLoginData(string username, string password)
+        private void ValidateLoginInput(string username, string password)
         {
             if (string.IsNullOrWhiteSpace(username))
             {
-                throw new InvalidLoginDataException("The username cannot be empty.");
+                throw new InvalidLoginInputException("The username cannot be empty.");
             }
 
             if (string.IsNullOrWhiteSpace(password))
             {
-                throw new InvalidLoginDataException("The password cannot be empty.");
+                throw new InvalidLoginInputException("The password cannot be empty.");
             }
         }
 

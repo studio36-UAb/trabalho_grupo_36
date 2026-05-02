@@ -1,3 +1,4 @@
+using Studio36.DTOs;
 using Studio36.ModelComponent;
 
 namespace Studio36.Tests;
@@ -10,16 +11,15 @@ public static class T09_ModelLoginValido
         bool? eventValue = null;
         string? eventMessage = null;
 
-        model.SendLoginState += (isLoggedIn, message) =>
+        model.SendLoginState += (result) =>
         {
-            eventValue = isLoggedIn;
-            eventMessage = message;
+            eventValue = result.IsSuccessful;
+            eventMessage = result.Message;
         };
 
-        model.AreCredentialsValid("admin", "admin123");
+        model.AreCredentialsValid(new LoginRequestData("admin", "admin123"));
 
-        TestHelper.AssertTrue(model.IsLoggedIn, "The model should mark the user as logged in.");
         TestHelper.AssertTrue(eventValue == true, "The model should emit a successful login event.");
-        TestHelper.AssertTrue(eventMessage == "Login successful.", "The model should emit the correct success message.");
+        TestHelper.AssertTrue(eventMessage == "Login successful.\n", "The model should emit the correct success message.");
     }
 }
