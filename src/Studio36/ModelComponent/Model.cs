@@ -1,5 +1,6 @@
 ﻿using System;
 using Studio36.DTOs;
+using Studio36.ModelComponent.Interfaces;
 using Studio36.ModelComponent.Services;
 
 namespace Studio36.ModelComponent
@@ -15,7 +16,8 @@ namespace Studio36.ModelComponent
         {
             { 1, new List<string> { "Definir arquitetura MVC", "Validar tratamento de erros" } }
         };
-        private readonly AuthenticationService authenticationService;
+        private readonly IAuthenticationService authenticationService;
+        private readonly IRegistrationService registrationService;
 
         public bool IsLoggedIn { get; set; } = false;
 
@@ -24,7 +26,15 @@ namespace Studio36.ModelComponent
 
         public Model()
         {
-            authenticationService = new AuthenticationService(@"UsersDatabase/UsersAccounts.json");
+            var jsonAccountService = new JsonAccountService(@"UsersDatabase/UsersAccounts.json");
+            authenticationService = jsonAccountService;
+            registrationService = jsonAccountService;
+        }
+
+        public Model(IAuthenticationService authService, IRegistrationService regService)
+        {
+            authenticationService = authService;
+            registrationService = regService;
         }
 
         public void AreCredentialsValid(LoginRequestData request)
@@ -38,16 +48,16 @@ namespace Studio36.ModelComponent
 
         public void RegisterUser(SignUpRequestData request)
         {
-            (SignUpResult result, string message) = authenticationService.RegisterUser(request.Email, request.Password);
+            (SignUpResult result, string message) = registrationService.RegisterUser(request.Email, request.Password);
 
             SendSignUpState?.Invoke(new SignUpResultData(result == SignUpResult.Success, message));
         }
 
-        private void ValidateLoginInput(string username, string password)
+        private void ValidateLoginInput(string email, string password)
         {
-            if (string.IsNullOrWhiteSpace(username))
+            if (string.IsNullOrWhiteSpace(email))
             {
-                throw new InvalidLoginInputException("The username cannot be empty.");
+                throw new InvalidLoginInputException("The email cannot be empty.");
             }
 
             if (string.IsNullOrWhiteSpace(password))
