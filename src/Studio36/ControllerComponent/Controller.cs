@@ -1,4 +1,5 @@
-﻿using Studio36.ModelComponent;
+﻿using Studio36.DTOs;
+using Studio36.ModelComponent;
 using Studio36.ViewComponent;
 
 namespace Studio36.ControllerComponent
@@ -25,14 +26,14 @@ namespace Studio36.ControllerComponent
 
         }
 
-        private void OnLoginStateReceived(bool isLoggedIn, string message)
+        private void OnLoginStateReceived(LoginResultData result)
         {
-            view.ShowLoginResult(isLoggedIn, message);
+            view.ShowLoginResult(result.IsSuccessful, result.Message);
         }
 
-        private void OnSignUpStateReceived(bool success, string message)
+        private void OnSignUpStateReceived(SignUpResultData result)
         {
-            view.ShowSignUpResult(success, message);
+            view.ShowSignUpResult(result.Message);
         }
 
         private void ProcessProjectTasksRequest(int idProjeto)
@@ -45,13 +46,13 @@ namespace Studio36.ControllerComponent
             view.Run();
         }
 
-        public void ProcessLogin(string username, string password)
+        public void ProcessLogin(LoginRequestData request)
         {
             try
             {
-                model.AreCredentialsValid(username, password);
+                model.AreCredentialsValid(request);
             }
-            catch (InvalidLoginDataException ex)
+            catch (InvalidLoginInputException ex)
             {
                 view.ShowErrorMessage(ex.Message);
             }
@@ -61,11 +62,11 @@ namespace Studio36.ControllerComponent
             }
         }
 
-        public void ProcessSignUp(string username, string password)
+        public void ProcessSignUp(SignUpRequestData request)
         {
             try
             {
-                model.RegisterUser(username, password);
+                model.RegisterUser(request);
             }
             catch (Exception)
             {

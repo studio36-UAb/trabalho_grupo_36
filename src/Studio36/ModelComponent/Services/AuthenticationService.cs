@@ -48,24 +48,24 @@ namespace Studio36.ModelComponent.Services
             }
         }
 
-        public (LoginResult, string) ValidateCredentials(string username, string password)
+        public (LoginResult, string) VerifyCredentials(string username, string password)
         {
             UserData? user = _users.FirstOrDefault(u => u.Username == username);
 
             if (user == null)
             {
                 Logger.Info($"Login attempt failed: User '{username}' not found.");
-                return (LoginResult.InvalidCredentials, "User not found.");
+                return (LoginResult.InvalidCredentials, "User not found.\n");
             }
 
             if (user.Password == password)
             {
                 Logger.Info($"User '{username}' logged in successfully.");
-                return (LoginResult.Success, "Login successful.");
+                return (LoginResult.Success, "Login successful.\n");
             }
 
             Logger.Warning($"Login attempt failed: Invalid password for user '{username}'.");
-            return (LoginResult.InvalidCredentials, "Invalid password.");
+            return (LoginResult.InvalidCredentials, "Invalid password.\n");
         }
 
         public (SignUpResult, string) RegisterUser(string username, string password)

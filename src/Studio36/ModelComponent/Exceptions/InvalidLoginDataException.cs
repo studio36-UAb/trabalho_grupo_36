@@ -2,17 +2,17 @@ using System;
 
 namespace Studio36.ModelComponent
 {
-    public class InvalidLoginDataException : Exception
+    public class InvalidLoginInputException : Exception
     {
-        public InvalidLoginDataException()
+        public InvalidLoginInputException()
         {
         }
 
-        public InvalidLoginDataException(string message) : base(message)
+        public InvalidLoginInputException(string message) : base(message)
         {
         }
 
-        public InvalidLoginDataException(string message, Exception innerException) : base(message, innerException)
+        public InvalidLoginInputException(string message, Exception innerException) : base(message, innerException)
         {
         }
     }
