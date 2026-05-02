@@ -1,5 +1,6 @@
 ﻿using System;
 using Studio36.ControllerComponent;
+using Studio36.DTOs;
 
 namespace Studio36.ViewComponent
 {
@@ -11,8 +12,8 @@ namespace Studio36.ViewComponent
 
         public MenuState CurrentState { get; set; } = MenuState.StartMenu;
 
-        public event Action<string, string>? UserAttemptLogin;
-        public event Action<string, string>? UserAttemptSignUp;
+        public event Action<LoginRequestData>? UserAttemptLogin;
+        public event Action<SignUpRequestData>? UserAttemptSignUp;
         public event Action<int>? UserRequestsProjectTasks;
 
         public View()
@@ -53,12 +54,12 @@ namespace Studio36.ViewComponent
             {
                 case StartMenuOption.Login:
                     var loginCredentials = startMenu.GetLoginData();
-                    UserAttemptLogin?.Invoke(loginCredentials.email, loginCredentials.password);
+                    UserAttemptLogin?.Invoke(new LoginRequestData(loginCredentials.email, loginCredentials.password));
                     break;
 
                 case StartMenuOption.SignUp:
                     var signUpCredentials = startMenu.GetSignUpData();
-                    UserAttemptSignUp?.Invoke(signUpCredentials.email, signUpCredentials.password);
+                    UserAttemptSignUp?.Invoke(new SignUpRequestData(signUpCredentials.email, signUpCredentials.password));
                     break;
 
                 case StartMenuOption.Exit:
@@ -122,7 +123,7 @@ namespace Studio36.ViewComponent
             Pause();
         }
 
-        public void ShowSignUpResult(bool success, string message)
+        public void ShowSignUpResult(string message)
         {
             Console.WriteLine(message);
             Pause();
