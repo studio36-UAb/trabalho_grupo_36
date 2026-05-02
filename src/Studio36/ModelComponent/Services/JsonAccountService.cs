@@ -1,14 +1,15 @@
 using Newtonsoft.Json;
+using Studio36.ModelComponent.Interfaces;
 using Studio36.Utils;
 
 namespace Studio36.ModelComponent.Services
 {
-    public class AuthenticationService
+    public class JsonAccountService : IAuthenticationService, IRegistrationService
     {
         private readonly string _jsonFilePath;
-        public List<UserData> _users { get; set; } = [];
+        public List<AccountCredentials> _users { get; set; } = [];
 
-        public AuthenticationService(string jsonFilePath)
+        public JsonAccountService(string jsonFilePath)
         {
             _jsonFilePath = Path.Combine(AppContext.BaseDirectory, jsonFilePath);
             LoadUsers();
@@ -22,7 +23,7 @@ namespace Studio36.ModelComponent.Services
                 {
                     string jsonContent = File.ReadAllText(_jsonFilePath);
 
-                    _users = JsonConvert.DeserializeObject<List<UserData>>(jsonContent)!;
+                    _users = JsonConvert.DeserializeObject<List<AccountCredentials>>(jsonContent)!;
 
                     if (_users == null)
                     {
@@ -38,7 +39,7 @@ namespace Studio36.ModelComponent.Services
             }
             catch (JsonException jsonEx)
             {
-                Logger.Error("JSON parsing failed. Check if JSON format matches UserData structure.", jsonEx);
+                Logger.Error("JSON parsing failed. Check if JSON format matches AccountCredentials structure.", jsonEx);
                 throw new Exception("Invalid database format.");
             }
             catch (Exception ex)
@@ -48,58 +49,58 @@ namespace Studio36.ModelComponent.Services
             }
         }
 
-        public (LoginResult, string) VerifyCredentials(string username, string password)
+        public (LoginResult, string) VerifyCredentials(string email, string password)
         {
-            UserData? user = _users.FirstOrDefault(u => u.Username == username);
+            AccountCredentials? user = _users.FirstOrDefault(u => u.Email == email);
 
             if (user == null)
             {
-                Logger.Info($"Login attempt failed: User '{username}' not found.");
+                Logger.Info($"Login attempt failed: User '{email}' not found.");
                 return (LoginResult.InvalidCredentials, "User not found.\n");
             }
 
             if (user.Password == password)
             {
-                Logger.Info($"User '{username}' logged in successfully.");
+                Logger.Info($"User '{email}' logged in successfully.");
                 return (LoginResult.Success, "Login successful.\n");
             }
 
-            Logger.Warning($"Login attempt failed: Invalid password for user '{username}'.");
+            Logger.Warning($"Login attempt failed: Invalid password for user '{email}'.");
             return (LoginResult.InvalidCredentials, "Invalid password.\n");
         }
 
-        public (SignUpResult, string) RegisterUser(string username, string password)
+        public (SignUpResult, string) RegisterUser(string email, string password)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+                if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
                 {
-                    Logger.Warning("Sign up attempt failed: Empty username or password.");
-                    return (SignUpResult.InvalidInput, "Username or password cannot be empty.");
+                    Logger.Warning("Sign up attempt failed: Empty email or password.");
+                    return (SignUpResult.InvalidInput, "Email or password cannot be empty.");
                 }
 
                 if (password.Length < 4)
                 {
-                    Logger.Warning($"Sign up attempt failed: Password too short for user '{username}'.");
+                    Logger.Warning($"Sign up attempt failed: Password too short for user '{email}'.");
                     return (SignUpResult.InvalidInput, "Password must be at least 4 characters long.");
                 }
 
-                UserData? existingUser = _users.FirstOrDefault(u => u.Username == username);
+                AccountCredentials? existingUser = _users.FirstOrDefault(u => u.Email == email);
                 if (existingUser != null)
                 {
-                    Logger.Info($"Sign up attempt failed: User '{username}' already exists.");
-                    return (SignUpResult.UserAlreadyExists, "Username already taken. Please choose another.");
+                    Logger.Info($"Sign up attempt failed: User '{email}' already exists.");
+                    return (SignUpResult.UserAlreadyExists, "Email already taken. Please choose another.");
                 }
 
-                _users.Add(new UserData
+                _users.Add(new AccountCredentials
                 {
-                    Username = username,
+                    Email = email,
                     Password = password
                 });
 
-                SaveUsers();
+                SaveUsersInJson();
 
-                Logger.Info($"User '{username}' registered successfully.");
+                Logger.Info($"User '{email}' registered successfully.");
                 return (SignUpResult.Success, "Registration successful! You can now log in.");
             }
             catch (Exception ex)
@@ -109,7 +110,7 @@ namespace Studio36.ModelComponent.Services
             }
         }
 
-        private void SaveUsers()
+        private void SaveUsersInJson()
         {
             try
             {
