@@ -8,6 +8,6 @@ public static class T05_AcessoRegisto
 
         TestHelper.AssertContains(output, "Please enter your username:");
         TestHelper.AssertContains(output, "Please enter your password:");
-        TestHelper.AssertContains(output, "Username already taken. Please choose another.");
+        TestHelper.AssertContains(output, "Email already taken. Please choose another.");
     }
 }
