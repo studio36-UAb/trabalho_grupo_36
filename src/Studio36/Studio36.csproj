@@ -18,8 +18,4 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ModelComponent\DTOs\" />
-  </ItemGroup>
-
 </Project>
