@@ -108,10 +108,15 @@ T09	Model valida credenciais válidas
 T10	Model rejeita credenciais inválidas
 T26	Listar tarefas de projeto inexistente
 T27	Introduzir ID de projeto não numérico na listagem de tarefas
+T28	Criar projeto válido
+T29	Listar projetos
+T30	Editar projeto válido
 
 Ao executar um teste com sucesso, deverá ser apresentada uma mensagem de aprovação correspondente ao respetivo identificador.
 
 Os testes T26 e T27 cobrem o fluxo de listagem de tarefas por projeto. O T26 valida o tratamento de `ProjectNotFoundException`, incluindo mensagem de erro, registo em log e apresentação da lista atualizada de projetos. O T27 valida a rejeição de IDs de projeto não numéricos, garantindo que a aplicação continua em execução.
+
+Os testes T28, T29 e T30 cobrem o módulo inicial de projetos. O T28 confirma que a opção "New Project" recolhe os dados necessários, cria o projeto com sucesso e permite consultar a lista de tarefas do projeto criado. O T29 confirma que a opção "List projects" apresenta os projetos existentes. O T30 confirma que a opção "Edit project" atualiza os dados de um projeto existente.
 
 ### Critério mínimo antes de abrir Pull Request
 
