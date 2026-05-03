@@ -13,7 +13,10 @@ List<TestCase> tests = new()
     new("T09", "Model valida credenciais validas", T09_ModelLoginValido.Run),
     new("T10", "Model rejeita credenciais invalidas", T10_ModelLoginInvalido.Run),
     new("T26", "Listar tarefas de projeto inexistente", T26_ProjectNotFound.Run),
-    new("T27", "Introduzir ID de projeto nao numerico na listagem de tarefas", T27_ProjectIdNaoNumerico.Run)
+    new("T27", "Introduzir ID de projeto nao numerico na listagem de tarefas", T27_ProjectIdNaoNumerico.Run),
+    new("T28", "Criar projeto valido", T28_CriarProjetoValido.Run),
+    new("T29", "Listar projetos", T29_ListarProjetos.Run),
+    new("T30", "Editar projeto valido", T30_EditarProjetoValido.Run)
 };
 
 if (args.Length > 0)

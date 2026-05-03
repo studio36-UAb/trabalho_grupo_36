@@ -4,7 +4,7 @@ public static class T27_ProjectIdNaoNumerico
 {
     public static void Run()
     {
-        string output = TestHelper.RunApplication("1\nadmin\nadmin123\n\n2\nabc\n\n3\n3");
+        string output = TestHelper.RunApplication("1\nadmin\nadmin123\n\n4\nabc\n\n5\n3");
 
         TestHelper.AssertContains(output, "Login successful.");
         TestHelper.AssertContains(output, "Please enter the project ID:");

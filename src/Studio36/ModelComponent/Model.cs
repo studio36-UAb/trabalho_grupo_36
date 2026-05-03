@@ -1,5 +1,6 @@
 ﻿using System;
 using Studio36.DTOs;
+using Studio36.ModelComponent.Entities;
 using Studio36.ModelComponent.Interfaces;
 using Studio36.ModelComponent.Services;
 
@@ -7,9 +8,14 @@ namespace Studio36.ModelComponent
 {
     public class Model
     {
-        private readonly Dictionary<int, string> projetos = new()
+        private readonly List<Project> projetos = new()
         {
-            { 1, "Projeto de demonstração" }
+            new Project(
+                1,
+                "Projeto de demonstração",
+                "Projeto inicial usado para demonstrar a aplicação.",
+                DateTime.Today,
+                DateTime.Today.AddDays(30))
         };
 
         private readonly Dictionary<int, List<string>> tarefasPorProjeto = new()
@@ -23,6 +29,8 @@ namespace Studio36.ModelComponent
 
         public event Action<LoginResultData>? SendLoginState;
         public event Action<SignUpResultData>? SendSignUpState;
+        public event Action<CreateProjectResultData>? SendProjectCreationState;
+        public event Action<EditProjectResultData>? SendProjectEditionState;
 
         public Model()
         {
@@ -53,6 +61,46 @@ namespace Studio36.ModelComponent
             SendSignUpState?.Invoke(new SignUpResultData(result == SignUpResult.Success, message));
         }
 
+        public void CreateProject(CreateProjectRequestData request)
+        {
+            ValidateProjectInput(request);
+
+            int idProjeto = GetNextProjectId();
+
+            // Guarda o projeto como entidade de domínio para suportar futuros fluxos de CRUD.
+            projetos.Add(new Project(
+                idProjeto,
+                request.Nome.Trim(),
+                request.Descricao.Trim(),
+                request.DataInicio,
+                request.DataFim));
+            tarefasPorProjeto.Add(idProjeto, new List<string>());
+
+            SendProjectCreationState?.Invoke(new CreateProjectResultData(
+                true,
+                idProjeto,
+                $"Project created successfully with ID {idProjeto}."));
+        }
+
+        public void EditProject(EditProjectRequestData request)
+        {
+            ValidateProjectInput(request.Nome, request.Descricao, request.DataInicio, request.DataFim);
+
+            Project projeto = GetProjectById(request.IdProjeto);
+
+            // Atualiza a entidade existente sem criar um novo projeto nem alterar o seu ID.
+            projeto.UpdateDetails(
+                request.Nome.Trim(),
+                request.Descricao.Trim(),
+                request.DataInicio,
+                request.DataFim);
+
+            SendProjectEditionState?.Invoke(new EditProjectResultData(
+                true,
+                request.IdProjeto,
+                $"Project {request.IdProjeto} updated successfully."));
+        }
+
         private void ValidateLoginInput(string email, string password)
         {
             if (string.IsNullOrWhiteSpace(email))
@@ -66,10 +114,44 @@ namespace Studio36.ModelComponent
             }
         }
 
+        private static void ValidateProjectInput(CreateProjectRequestData request)
+        {
+            ValidateProjectInput(request.Nome, request.Descricao, request.DataInicio, request.DataFim);
+        }
+
+        private static void ValidateProjectInput(string nome, string descricao, DateTime dataInicio, DateTime dataFim)
+        {
+            if (string.IsNullOrWhiteSpace(nome))
+            {
+                throw new ArgumentException("The project name cannot be empty.");
+            }
+
+            if (string.IsNullOrWhiteSpace(descricao))
+            {
+                throw new ArgumentException("The project description cannot be empty.");
+            }
+
+            if (dataFim < dataInicio)
+            {
+                throw new ArgumentException("The project end date cannot be earlier than the start date.");
+            }
+        }
+
+        private int GetNextProjectId()
+        {
+            // Calcula o próximo ID com base nos projetos já existentes no estado do Model.
+            if (projetos.Count == 0)
+            {
+                return 1;
+            }
+
+            return projetos.Max(projeto => projeto.Id) + 1;
+        }
+
         public List<string> GetTasksByProject(int idProjeto)
         {
             // Verifica se o projeto existe no estado atual do Model.
-            if (!projetos.ContainsKey(idProjeto))
+            if (!ProjectExists(idProjeto))
             {
                 throw new ProjectNotFoundException(idProjeto);
             }
@@ -87,8 +169,26 @@ namespace Studio36.ModelComponent
         {
             // Devolve a lista atualizada de projetos existentes no Model.
             return projetos
-                .Select(projeto => $"{projeto.Key} - {projeto.Value}")
+                .OrderBy(projeto => projeto.Id)
+                .Select(projeto => $"{projeto.Id} - {projeto.Name}")
                 .ToList();
+        }
+
+        private bool ProjectExists(int idProjeto)
+        {
+            return projetos.Any(projeto => projeto.Id == idProjeto);
+        }
+
+        private Project GetProjectById(int idProjeto)
+        {
+            Project? projeto = projetos.FirstOrDefault(projeto => projeto.Id == idProjeto);
+
+            if (projeto == null)
+            {
+                throw new ProjectNotFoundException(idProjeto);
+            }
+
+            return projeto;
         }
     }
 }

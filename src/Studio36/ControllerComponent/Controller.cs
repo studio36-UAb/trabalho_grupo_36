@@ -20,9 +20,14 @@ namespace Studio36.ControllerComponent
             view.UserAttemptSignUp += ProcessSignUp;
 
             view.UserRequestsProjectTasks += ProcessProjectTasksRequest;
+            view.UserRequestsProjectCreation += ProcessProjectCreationRequest;
+            view.UserRequestsProjectEdition += ProcessProjectEditionRequest;
+            view.UserRequestsProjectList += ProcessProjectListRequest;
 
             model.SendLoginState += OnLoginStateReceived;
             model.SendSignUpState += OnSignUpStateReceived;
+            model.SendProjectCreationState += OnProjectCreationStateReceived;
+            model.SendProjectEditionState += OnProjectEditionStateReceived;
 
         }
 
@@ -36,9 +41,34 @@ namespace Studio36.ControllerComponent
             view.ShowSignUpResult(result.Message);
         }
 
+        private void OnProjectCreationStateReceived(CreateProjectResultData result)
+        {
+            view.ShowProjectCreationResult(result.Message);
+        }
+
+        private void OnProjectEditionStateReceived(EditProjectResultData result)
+        {
+            view.ShowProjectEditionResult(result.Message);
+        }
+
+        private void ProcessProjectCreationRequest(CreateProjectRequestData request)
+        {
+            CriarProjeto(request.Nome, request.Descricao, request.DataInicio, request.DataFim);
+        }
+
+        private void ProcessProjectEditionRequest(EditProjectRequestData request)
+        {
+            EditarProjeto(request.IdProjeto, request.Nome, request.Descricao, request.DataInicio, request.DataFim);
+        }
+
         private void ProcessProjectTasksRequest(int idProjeto)
         {
             ListarTarefas(idProjeto);
+        }
+
+        private void ProcessProjectListRequest()
+        {
+            ListarProjetos();
         }
 
         public void StartProgram()
@@ -88,15 +118,59 @@ namespace Studio36.ControllerComponent
         // PROJETOS
         public void CriarProjeto(string nome, string descricao, DateTime dataInicio, DateTime dataFim)
         {
+            try
+            {
+                model.CreateProject(new CreateProjectRequestData(nome, descricao, dataInicio, dataFim));
+            }
+            catch (ArgumentException ex)
+            {
+                view.ShowErrorMessage(ex.Message);
+            }
+            catch (Exception)
+            {
+                view.ShowErrorMessage("Erro inesperado ao criar projeto.");
+            }
         }
 
         public List<string> ListarProjetos()
         {
-            return new List<string>();
+            try
+            {
+                List<string> projetos = model.GetProjects();
+                view.ShowProjectList(projetos);
+                return projetos;
+            }
+            catch (Exception)
+            {
+                view.ShowErrorMessage("Erro inesperado ao listar projetos.");
+                return new List<string>();
+            }
         }
 
         public void EditarProjeto(int idProjeto, string nome, string descricao)
         {
+            EditarProjeto(idProjeto, nome, descricao, DateTime.Today, DateTime.Today);
+        }
+
+        public void EditarProjeto(int idProjeto, string nome, string descricao, DateTime dataInicio, DateTime dataFim)
+        {
+            try
+            {
+                model.EditProject(new EditProjectRequestData(idProjeto, nome, descricao, dataInicio, dataFim));
+            }
+            catch (ProjectNotFoundException ex)
+            {
+                modelLog.RegistarLog(ex, idProjeto);
+                view.ShowErrorMessage(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                view.ShowErrorMessage(ex.Message);
+            }
+            catch (Exception)
+            {
+                view.ShowErrorMessage("Erro inesperado ao editar projeto.");
+            }
         }
 
         public void EliminarProjeto(int idProjeto)
