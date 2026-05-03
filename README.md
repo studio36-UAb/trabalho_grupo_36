@@ -117,6 +117,8 @@ T07	Input não numérico no menu
 T08	Input vazio no menu
 T09	Model valida credenciais válidas
 T10	Model rejeita credenciais inválidas
+T18	Criar projeto sem nome
+T19	Criar projeto com datas inválidas
 T26	Listar tarefas de projeto inexistente
 T27	Introduzir ID de projeto não numérico na listagem de tarefas
 T28	Criar projeto válido
@@ -127,7 +129,7 @@ Ao executar um teste com sucesso, deverá ser apresentada uma mensagem de aprova
 
 Os testes T26 e T27 validam especificamente a opção "List tasks by project" no menu principal. O T26 confirma que um `idProjeto` inexistente aciona o `ProjectNotFoundException`, apresenta a mensagem de erro, regista a ocorrência em log e mostra a lista atualizada de projetos. O T27 confirma que um ID não numérico é rejeitado com uma mensagem adequada, sem encerramento abrupto da aplicação.
 
-Os testes T28, T29 e T30 validam o módulo inicial de projetos. O T28 valida o fluxo de criação de um projeto válido a partir do menu principal, confirmando que o novo projeto recebe um ID e fica disponível para operações seguintes, como a listagem de tarefas. O T29 confirma que a opção "List projects" apresenta a lista de projetos existentes. O T30 confirma que a opção "Edit project" atualiza os dados de um projeto existente.
+Os testes T18, T19, T28, T29 e T30 validam o módulo inicial de projetos. O T18 confirma que um projeto sem nome é rejeitado. O T19 confirma que uma data de fim anterior à data de início é rejeitada. O T28 valida o fluxo de criação de um projeto válido a partir do menu principal, confirmando que o novo projeto recebe um ID e fica disponível para operações seguintes, como a listagem de tarefas. O T29 confirma que a opção "List projects" apresenta a lista de projetos existentes. O T30 confirma que a opção "Edit project" atualiza os dados de um projeto existente.
 
 Nesta fase, os testes incidem apenas sobre funcionalidades já implementadas. Funcionalidades futuras, como eliminação de projetos, gestão completa de tarefas, membros, persistência em JSON e geração de relatórios PDF, deverão ser testadas quando a respetiva implementação estiver concluída.
 
