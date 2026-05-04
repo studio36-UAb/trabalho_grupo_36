@@ -29,7 +29,7 @@ A fase de análise e arquitetura preliminar produziu o seguinte:
 
 A implementação da aplicação está em curso desde abril de 2026. A estrutura base está criada com a separação entre as três camadas MVC — Model, View e Controller — comunicando exclusivamente através de eventos e delegados, sem dependências diretas entre View e Model.
 
-O fluxo de autenticação já se encontra validado por testes automatizados. A listagem de tarefas por projeto inclui também tratamento de erro para projetos inexistentes através da exceção `ProjectNotFoundException`, permitindo apresentar uma mensagem adequada ao utilizador, registar a ocorrência em log e mostrar a lista atualizada de projetos disponíveis.
+O fluxo de autenticação já se encontra validado por testes automatizados. A aplicação permite também criar projetos a partir do menu principal, recolhendo nome, descrição, data de início e data de fim, com validação básica dos dados introduzidos. A listagem de tarefas por projeto inclui tratamento de erro para projetos inexistentes através da exceção `ProjectNotFoundException`, permitindo apresentar uma mensagem adequada ao utilizador, registar a ocorrência em log e mostrar a lista atualizada de projetos disponíveis.
 
 ---
 
@@ -85,7 +85,7 @@ dotnet run --project .\src\Studio36\Studio36.csproj
 
 O projeto inclui uma aplicação de consola independente para execução de testes automatizados, localizada em tests/Studio36.Tests.
 
-Estes testes validam o comportamento atualmente implementado na aplicação, nomeadamente a apresentação do menu inicial, a saída da aplicação, o fluxo básico de autenticação, o acesso à opção de registo, o tratamento de entradas inválidas e o fluxo de erro na listagem de tarefas por projeto.
+Estes testes validam o comportamento atualmente implementado na aplicação, nomeadamente a apresentação do menu inicial, a saída da aplicação, o fluxo básico de autenticação, o acesso à opção de registo, o tratamento de entradas inválidas, a criação de projetos e o fluxo de erro na listagem de tarefas por projeto.
 
 ## Executar todos os testes
 
@@ -117,14 +117,21 @@ T07	Input não numérico no menu
 T08	Input vazio no menu
 T09	Model valida credenciais válidas
 T10	Model rejeita credenciais inválidas
+T18	Criar projeto sem nome
+T19	Criar projeto com datas inválidas
 T26	Listar tarefas de projeto inexistente
 T27	Introduzir ID de projeto não numérico na listagem de tarefas
+T28	Criar projeto válido
+T29	Listar projetos
+T30	Editar projeto válido
 
 Ao executar um teste com sucesso, deverá ser apresentada uma mensagem de aprovação correspondente ao respetivo identificador.
 
 Os testes T26 e T27 validam especificamente a opção "List tasks by project" no menu principal. O T26 confirma que um `idProjeto` inexistente aciona o `ProjectNotFoundException`, apresenta a mensagem de erro, regista a ocorrência em log e mostra a lista atualizada de projetos. O T27 confirma que um ID não numérico é rejeitado com uma mensagem adequada, sem encerramento abrupto da aplicação.
 
-Nesta fase, os testes incidem apenas sobre funcionalidades já implementadas. Funcionalidades futuras, como gestão completa de projetos, tarefas, membros, persistência em JSON e geração de relatórios PDF, deverão ser testadas quando a respetiva implementação estiver concluída.
+Os testes T18, T19, T28, T29 e T30 validam o módulo inicial de projetos. O T18 confirma que um projeto sem nome é rejeitado. O T19 confirma que uma data de fim anterior à data de início é rejeitada. O T28 valida o fluxo de criação de um projeto válido a partir do menu principal, confirmando que o novo projeto recebe um ID e fica disponível para operações seguintes, como a listagem de tarefas. O T29 confirma que a opção "List projects" apresenta a lista de projetos existentes. O T30 confirma que a opção "Edit project" atualiza os dados de um projeto existente.
+
+Nesta fase, os testes incidem apenas sobre funcionalidades já implementadas. Funcionalidades futuras, como eliminação de projetos, gestão completa de tarefas, membros, persistência em JSON e geração de relatórios PDF, deverão ser testadas quando a respetiva implementação estiver concluída.
 
 ## Modelo de desenvolvimento
 
