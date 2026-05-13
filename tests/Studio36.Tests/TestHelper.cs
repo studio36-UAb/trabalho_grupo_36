@@ -1,4 +1,8 @@
 using Studio36.ControllerComponent;
+using Studio36.ModelComponent;
+using Studio36.ModelComponent.Interfaces;
+using Studio36.ViewComponent;
+using Studio36.ViewComponent.Interfaces;
 
 namespace Studio36.Tests;
 
@@ -17,7 +21,10 @@ public static class TestHelper
             Console.SetIn(testInput);
             Console.SetOut(testOutput);
 
-            Controller controller = new();
+            IModel model = new Model();
+            IView view = new View();
+
+            Controller controller = new(model, view);
             controller.StartProgram();
 
             return testOutput.ToString();

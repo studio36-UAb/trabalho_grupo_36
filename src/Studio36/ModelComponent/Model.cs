@@ -6,7 +6,7 @@ using Studio36.ModelComponent.Services;
 
 namespace Studio36.ModelComponent
 {
-    public class Model
+    public class Model : IModel
     {
         private readonly List<Project> projetos = new()
         {
