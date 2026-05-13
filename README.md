@@ -27,7 +27,9 @@ A fase de análise e arquitetura preliminar produziu o seguinte:
 - Análise da API de negócio e proposta de aplicação-demonstradora
 - Plano de verificações v2
 
-A implementação da aplicação está em curso desde abril de 2026. A estrutura base está criada com a separação entre as três camadas MVC — Model, View e Controller — comunicando exclusivamente através de eventos e delegados, sem dependências diretas entre View e Model.
+A implementação da aplicação está em curso desde abril de 2026. A estrutura base está criada com a separação entre as três camadas MVC — Model, View e Controller — comunicando através de eventos e delegados, sem dependências diretas entre View e Model.
+
+Foi também introduzida uma evolução arquitetónica para reduzir o acoplamento entre componentes: o `Controller` passou a depender dos contratos `IModel` e `IView`, em vez de depender diretamente das classes concretas `Model` e `View`. As classes concretas continuam a existir e implementam essas interfaces, mas são criadas no ponto de arranque da aplicação e injetadas no `Controller`.
 
 O fluxo de autenticação já se encontra validado por testes automatizados. A aplicação permite também criar projetos a partir do menu principal, recolhendo nome, descrição, data de início e data de fim, com validação básica dos dados introduzidos. A listagem de tarefas por projeto inclui tratamento de erro para projetos inexistentes através da exceção `ProjectNotFoundException`, permitindo apresentar uma mensagem adequada ao utilizador, registar a ocorrência em log e mostrar a lista atualizada de projetos disponíveis.
 
@@ -67,6 +69,43 @@ O fluxo de autenticação já se encontra validado por testes automatizados. A a
 └── docs/       → documentação do projeto
 ```
 
+### Arquitetura MVC e interfaces
+
+O projeto segue o padrão MVC:
+
+- `View` recolhe dados do utilizador e apresenta resultados
+- `Controller` coordena a comunicação entre View e Model
+- `Model` contém a lógica de validação, autenticação e gestão de dados
+
+Para reduzir dependências estruturais, foram criadas interfaces nas fronteiras entre os componentes:
+
+- `IView` define o contrato usado pelo `Controller` para comunicar com a View
+- `IModel` define o contrato usado pelo `Controller` para comunicar com o Model
+
+Assim, o `Controller` trabalha com:
+
+```csharp
+private readonly IModel model;
+private readonly IView view;
+```
+
+e recebe as dependências pelo construtor:
+
+```csharp
+public Controller(IModel model, IView view)
+```
+
+No arranque da aplicação, as implementações concretas são criadas e injetadas:
+
+```csharp
+IModel model = new Model();
+IView view = new View();
+
+Controller controller = new(model, view);
+```
+
+Com esta abordagem, uma futura substituição da View de consola por outra implementação, ou do Model atual por outro mecanismo de dados, pode ser feita com menor impacto no `Controller`, desde que as novas classes respeitem os contratos definidos.
+
 ---
 
 ## Execução da aplicação
@@ -105,31 +144,37 @@ Exemplo (para o teste T01 Apresentação do menu inicial):
 dotnet run --project .\tests\Studio36.Tests\Studio36.Tests.csproj -- T01
 ```
 
-Testes atualmente disponíveis
-ID	Descrição
-T01	Apresentação do menu inicial
-T02	Terminar aplicação pela opção 3
-T03	Login com credenciais válidas
-T04	Login com credenciais inválidas
-T05	Acesso à opção de registo
-T06	Opção inválida no menu
-T07	Input não numérico no menu
-T08	Input vazio no menu
-T09	Model valida credenciais válidas
-T10	Model rejeita credenciais inválidas
-T18	Criar projeto sem nome
-T19	Criar projeto com datas inválidas
-T26	Listar tarefas de projeto inexistente
-T27	Introduzir ID de projeto não numérico na listagem de tarefas
-T28	Criar projeto válido
-T29	Listar projetos
-T30	Editar projeto válido
+Testes atualmente disponíveis:
+
+| ID | Descrição |
+|---|---|
+| T01 | Apresentação do menu inicial |
+| T02 | Terminar aplicação pela opção 3 |
+| T03 | Login com credenciais válidas |
+| T04 | Login com credenciais inválidas |
+| T05 | Acesso à opção de registo |
+| T06 | Opção inválida no menu |
+| T07 | Input não numérico no menu |
+| T08 | Input vazio no menu |
+| T09 | Model valida credenciais válidas |
+| T10 | Model rejeita credenciais inválidas |
+| T18 | Criar projeto sem nome |
+| T19 | Criar projeto com datas inválidas |
+| T26 | Listar tarefas de projeto inexistente |
+| T27 | Introduzir ID de projeto não numérico na listagem de tarefas |
+| T28 | Criar projeto válido |
+| T29 | Listar projetos |
+| T30 | Editar projeto válido |
+| T31 | Controller depende de IModel e IView |
+| T32 | Controller funciona com implementações fake das interfaces |
 
 Ao executar um teste com sucesso, deverá ser apresentada uma mensagem de aprovação correspondente ao respetivo identificador.
 
 Os testes T26 e T27 validam especificamente a opção "List tasks by project" no menu principal. O T26 confirma que um `idProjeto` inexistente aciona o `ProjectNotFoundException`, apresenta a mensagem de erro, regista a ocorrência em log e mostra a lista atualizada de projetos. O T27 confirma que um ID não numérico é rejeitado com uma mensagem adequada, sem encerramento abrupto da aplicação.
 
 Os testes T18, T19, T28, T29 e T30 validam o módulo inicial de projetos. O T18 confirma que um projeto sem nome é rejeitado. O T19 confirma que uma data de fim anterior à data de início é rejeitada. O T28 valida o fluxo de criação de um projeto válido a partir do menu principal, confirmando que o novo projeto recebe um ID e fica disponível para operações seguintes, como a listagem de tarefas. O T29 confirma que a opção "List projects" apresenta a lista de projetos existentes. O T30 confirma que a opção "Edit project" atualiza os dados de um projeto existente.
+
+Os testes T31 e T32 validam a evolução arquitetónica baseada em interfaces. O T31 confirma que o `Controller` depende de `IModel` e `IView`. O T32 usa implementações fake dessas interfaces para confirmar que o `Controller` consegue funcionar com outros objetos que cumpram os contratos, sem depender diretamente das classes concretas `Model` e `View`.
 
 Nesta fase, os testes incidem apenas sobre funcionalidades já implementadas. Funcionalidades futuras, como eliminação de projetos, gestão completa de tarefas, membros, persistência em JSON e geração de relatórios PDF, deverão ser testadas quando a respetiva implementação estiver concluída.
 

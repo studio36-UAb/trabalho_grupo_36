@@ -18,7 +18,9 @@ List<TestCase> tests = new()
     new("T27", "Introduzir ID de projeto nao numerico na listagem de tarefas", T27_ProjectIdNaoNumerico.Run),
     new("T28", "Criar projeto valido", T28_CriarProjetoValido.Run),
     new("T29", "Listar projetos", T29_ListarProjetos.Run),
-    new("T30", "Editar projeto valido", T30_EditarProjetoValido.Run)
+    new("T30", "Editar projeto valido", T30_EditarProjetoValido.Run),
+    new("T31", "Controller depende de IModel e IView", T31_ControllerDependeDeInterfaces.Run),
+    new("T32", "Controller funciona com implementacoes fake das interfaces", T32_ControllerFuncionaComFakes.Run)
 };
 
 if (args.Length > 0)
