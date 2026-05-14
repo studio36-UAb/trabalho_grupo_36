@@ -1,6 +1,8 @@
 using Studio36.ControllerComponent;
 using Studio36.ModelComponent;
 using Studio36.ModelComponent.Interfaces;
+using Studio36.ReportComponent;
+using Studio36.ReportComponent.Interfaces;
 using Studio36.ViewComponent;
 using Studio36.ViewComponent.Interfaces;
 
@@ -23,8 +25,9 @@ public static class TestHelper
 
             IModel model = new Model();
             IView view = new View();
+            IReportGenerator reportGenerator = new PdfReportGenerator();
 
-            Controller controller = new(model, view);
+            Controller controller = new(model, view, reportGenerator);
             controller.StartProgram();
 
             return testOutput.ToString();

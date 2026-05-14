@@ -1,6 +1,7 @@
 ﻿using Studio36.DTOs;
 using Studio36.ModelComponent;
 using Studio36.ModelComponent.Interfaces;
+using Studio36.ReportComponent.Interfaces;
 using Studio36.ViewComponent.Interfaces;
 
 namespace Studio36.ControllerComponent
@@ -9,12 +10,14 @@ namespace Studio36.ControllerComponent
     {
         readonly IModel model;
         readonly IView view;
+        readonly IReportGenerator reportGenerator;
         readonly ModelLog modelLog;
 
-        public Controller(IModel model, IView view)
+        public Controller(IModel model, IView view, IReportGenerator reportGenerator)
         {
             this.model = model;
             this.view = view;
+            this.reportGenerator = reportGenerator;
             modelLog = new ModelLog();
 
             view.UserAttemptLogin += ProcessLogin;
@@ -23,12 +26,15 @@ namespace Studio36.ControllerComponent
             view.UserRequestsProjectTasks += ProcessProjectTasksRequest;
             view.UserRequestsProjectCreation += ProcessProjectCreationRequest;
             view.UserRequestsProjectEdition += ProcessProjectEditionRequest;
+            view.UserRequestsProjectDeletion += ProcessProjectDeletionRequest;
+            view.UserRequestsProjectReport += ProcessProjectReportRequest;
             view.UserRequestsProjectList += ProcessProjectListRequest;
 
             model.SendLoginState += OnLoginStateReceived;
             model.SendSignUpState += OnSignUpStateReceived;
             model.SendProjectCreationState += OnProjectCreationStateReceived;
             model.SendProjectEditionState += OnProjectEditionStateReceived;
+            model.SendProjectDeletionState += OnProjectDeletionStateReceived;
 
         }
 
@@ -52,6 +58,11 @@ namespace Studio36.ControllerComponent
             view.ShowProjectEditionResult(result.Message);
         }
 
+        private void OnProjectDeletionStateReceived(DeleteProjectResultData result)
+        {
+            view.ShowProjectDeletionResult(result.Message);
+        }
+
         private void ProcessProjectCreationRequest(CreateProjectRequestData request)
         {
             CriarProjeto(request.Nome, request.Descricao, request.DataInicio, request.DataFim);
@@ -60,6 +71,16 @@ namespace Studio36.ControllerComponent
         private void ProcessProjectEditionRequest(EditProjectRequestData request)
         {
             EditarProjeto(request.IdProjeto, request.Nome, request.Descricao, request.DataInicio, request.DataFim);
+        }
+
+        private void ProcessProjectDeletionRequest(int idProjeto)
+        {
+            EliminarProjeto(idProjeto);
+        }
+
+        private void ProcessProjectReportRequest(int idProjeto)
+        {
+            GerarRelatorio(idProjeto);
         }
 
         private void ProcessProjectTasksRequest(int idProjeto)
@@ -176,6 +197,19 @@ namespace Studio36.ControllerComponent
 
         public void EliminarProjeto(int idProjeto)
         {
+            try
+            {
+                model.DeleteProject(idProjeto);
+            }
+            catch (ProjectNotFoundException ex)
+            {
+                modelLog.RegistarLog(ex, idProjeto);
+                view.ShowErrorMessage(ex.Message);
+            }
+            catch (Exception)
+            {
+                view.ShowErrorMessage("Erro inesperado ao eliminar projeto.");
+            }
         }
 
         // TAREFAS
@@ -230,6 +264,22 @@ namespace Studio36.ControllerComponent
         // RELATÓRIOS
         public void GerarRelatorio(int idProjeto)
         {
+            try
+            {
+                ProjectReportData reportData = model.GetProjectReportData(idProjeto);
+                ReportResultData result = reportGenerator.GenerateProjectReport(reportData);
+
+                view.ShowReportResult(result.Message);
+            }
+            catch (ProjectNotFoundException ex)
+            {
+                modelLog.RegistarLog(ex, idProjeto);
+                view.ShowErrorMessage(ex.Message);
+            }
+            catch (Exception)
+            {
+                view.ShowErrorMessage("Erro inesperado ao gerar relatório.");
+            }
         }
     }
 }

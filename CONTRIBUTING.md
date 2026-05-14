@@ -117,14 +117,33 @@ Testes atualmente disponíveis:
 | T30 | Editar projeto válido |
 | T31 | Controller depende de IModel e IView |
 | T32 | Controller funciona com implementações fake das interfaces |
+| T33 | Fluxo MVC completo na criação de projeto |
+| T34 | Fluxo MVC completo na listagem de projetos |
+| T35 | Fluxo MVC completo na edição de projeto válido |
+| T36 | Fluxo MVC na edição de projeto inexistente |
+| T37 | Fluxo MVC na edição de projeto com nome vazio |
+| T38 | Eliminar projeto válido |
+| T39 | Fluxo MVC completo na geração de relatório |
+| T40 | Gerar relatório válido |
+| T41 | Gerar relatório de projeto inexistente |
 
 Ao executar um teste com sucesso, deverá ser apresentada uma mensagem de aprovação correspondente ao respetivo identificador.
 
 Os testes T26 e T27 cobrem o fluxo de listagem de tarefas por projeto. O T26 valida o tratamento de `ProjectNotFoundException`, incluindo mensagem de erro, registo em log e apresentação da lista atualizada de projetos. O T27 valida a rejeição de IDs de projeto não numéricos, garantindo que a aplicação continua em execução.
 
-Os testes T18, T19, T28, T29 e T30 cobrem o módulo inicial de projetos. O T18 confirma que um projeto sem nome é rejeitado. O T19 confirma que uma data de fim anterior à data de início é rejeitada. O T28 confirma que a opção "New Project" recolhe os dados necessários, cria o projeto com sucesso e permite consultar a lista de tarefas do projeto criado. O T29 confirma que a opção "List projects" apresenta os projetos existentes. O T30 confirma que a opção "Edit project" atualiza os dados de um projeto existente.
+Os testes T18, T19, T28, T29 e T30 cobrem o módulo inicial de projetos através da aplicação de consola. O T18 confirma que um projeto sem nome é rejeitado. O T19 confirma que uma data de fim anterior à data de início é rejeitada. O T28 confirma que a opção "New Project" recolhe os dados necessários, cria o projeto com sucesso e permite consultar a lista de tarefas do projeto criado. O T29 confirma que a opção "List projects" apresenta os projetos existentes. O T30 confirma que a opção "Edit project" atualiza os dados de um projeto existente.
 
 Os testes T31 e T32 cobrem a evolução arquitetónica baseada em interfaces. O T31 valida que o `Controller` depende dos contratos `IModel` e `IView`. O T32 valida que o `Controller` consegue funcionar com implementações fake dessas interfaces, demonstrando que não está preso às classes concretas `Model` e `View`.
+
+Os testes T33 e T34 cobrem fluxos MVC completos com View fake e Model real. O T33 valida o percurso de criação de projeto, desde o pedido da View até à mensagem final apresentada. O T34 valida o percurso de listagem de projetos, confirmando que a View recebe a lista devolvida pelo Model através do Controller.
+
+Os testes T35, T36 e T37 cobrem o fluxo MVC de edição de projetos. O T35 valida a edição de um projeto existente. O T36 valida a tentativa de editar um projeto inexistente. O T37 valida a rejeição de uma edição com nome vazio, garantindo que os dados originais não são alterados.
+
+O teste T38 cobre o fluxo de eliminação de projeto através do menu da aplicação. Valida que a opção "Delete project" recolhe o `idProjeto`, remove o projeto existente, apresenta a mensagem de sucesso e confirma a remoção através da listagem de projetos.
+
+Os testes T39, T40 e T41 cobrem o fluxo de geração de relatórios. O T39 valida o percurso MVC completo com View fake, Model real e gerador de relatório fake. O T40 valida a geração de um ficheiro PDF para um projeto existente. O T41 valida o tratamento de erro quando o projeto indicado não existe.
+
+Os relatórios são gerados com PDFsharp. Para manter compatibilidade entre Windows, macOS e Linux, a fonte Noto Sans está incluída no projeto em `src/Studio36/Assets/Fonts` e é carregada pelo `Studio36FontResolver`. Não devem ser usadas fontes dependentes apenas do sistema operativo, como Arial, sem um resolver próprio.
 
 ### Critério mínimo antes de abrir Pull Request
 
@@ -160,6 +179,7 @@ O projeto segue o padrão MVC. Para manter o acoplamento baixo devem ser respeit
 - Toda a comunicação entre Model e View é feita **exclusivamente através de eventos**, com os parâmetros necessários incluídos no próprio evento
 - O **Controller é o único intermediário** - subscreve os eventos do Model e chama os métodos públicos da View para atualizar o ecrã
 - O **Controller deve depender das interfaces** `IModel` e `IView`, não das classes concretas `Model` e `View`
+- O **Controller deve depender da interface** `IReportGenerator` para gerar relatórios, não de uma classe concreta nem de detalhes de PDF
 - As classes concretas devem ser criadas no ponto de arranque da aplicação e injetadas no `Controller`
 - Exceções do Model, como `ProjectNotFoundException`, devem ser tratadas no Controller, que decide que mensagens e atualizações devem ser enviadas para a View
 
@@ -172,8 +192,9 @@ Exemplo do padrão esperado:
 ```csharp
 IModel model = new Model();
 IView view = new View();
+IReportGenerator reportGenerator = new PdfReportGenerator();
 
-Controller controller = new(model, view);
+Controller controller = new(model, view, reportGenerator);
 ```
 
 No `Controller`, o campo deve manter o tipo da interface:
@@ -181,6 +202,7 @@ No `Controller`, o campo deve manter o tipo da interface:
 ```csharp
 private readonly IModel model;
 private readonly IView view;
+private readonly IReportGenerator reportGenerator;
 ```
 
 Isto permite substituir futuramente a View ou o Model por outra implementação, desde que respeite o contrato definido.

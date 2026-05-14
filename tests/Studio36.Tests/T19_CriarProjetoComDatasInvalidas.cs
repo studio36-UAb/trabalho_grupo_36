@@ -5,7 +5,7 @@ public static class T19_CriarProjetoComDatasInvalidas
     public static void Run()
     {
         string output = TestHelper.RunApplication(
-            "1\nadmin\nadmin123\n\n1\nProjeto datas invalidas\nDescricao valida\n2026-05-10\n2026-05-04\n\n2\n\n5\n3");
+            "1\nadmin\nadmin123\n\n1\nProjeto datas invalidas\nDescricao valida\n2026-05-10\n2026-05-04\n\n2\n\n7\n3");
 
         TestHelper.AssertContains(output, "Login successful.");
         TestHelper.AssertContains(output, "New Project");
