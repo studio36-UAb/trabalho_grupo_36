@@ -22,7 +22,14 @@ List<TestCase> tests = new()
     new("T31", "Controller depende de IModel e IView", T31_ControllerDependeDeInterfaces.Run),
     new("T32", "Controller funciona com implementacoes fake das interfaces", T32_ControllerFuncionaComFakes.Run),
     new("T33", "Fluxo MVC completo na criacao de projeto", T33_FluxoCriacaoProjetoMvc.Run),
-    new("T34", "Fluxo MVC completo na listagem de projetos", T34_FluxoListagemProjetosMvc.Run)
+    new("T34", "Fluxo MVC completo na listagem de projetos", T34_FluxoListagemProjetosMvc.Run),
+    new("T35", "Fluxo MVC completo na edicao de projeto valido", T35_FluxoEditarProjetoValidoMvc.Run),
+    new("T36", "Fluxo MVC na edicao de projeto inexistente", T36_FluxoEditarProjetoInexistenteMvc.Run),
+    new("T37", "Fluxo MVC na edicao de projeto com nome vazio", T37_FluxoEditarProjetoNomeVazioMvc.Run),
+    new("T38", "Eliminar projeto valido", T38_EliminarProjetoValido.Run),
+    new("T39", "Fluxo MVC completo na geracao de relatorio", T39_FluxoGerarRelatorioMvc.Run),
+    new("T40", "Gerar relatorio valido", T40_GerarRelatorioValido.Run),
+    new("T41", "Gerar relatorio de projeto inexistente", T41_GerarRelatorioProjetoInexistente.Run)
 };
 
 if (args.Length > 0)

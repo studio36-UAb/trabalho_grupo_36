@@ -12,7 +12,7 @@ public static class T33_FluxoCriacaoProjetoMvc
         Model model = new();
         FakeView view = new();
 
-        _ = new Controller(model, view);
+        _ = new Controller(model, view, new ReportGeneratorStub());
 
         CreateProjectRequestData request = new(
             "Projeto MVC",
@@ -61,6 +61,18 @@ public static class T33_FluxoCriacaoProjetoMvc
             remove { }
         }
 
+        public event Action<int>? UserRequestsProjectDeletion
+        {
+            add { }
+            remove { }
+        }
+
+        public event Action<int>? UserRequestsProjectReport
+        {
+            add { }
+            remove { }
+        }
+
         public event Action? UserRequestsProjectList
         {
             add { }
@@ -98,6 +110,14 @@ public static class T33_FluxoCriacaoProjetoMvc
         }
 
         public void ShowProjectEditionResult(string message)
+        {
+        }
+
+        public void ShowProjectDeletionResult(string message)
+        {
+        }
+
+        public void ShowReportResult(string message)
         {
         }
 

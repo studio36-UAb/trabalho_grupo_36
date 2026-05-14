@@ -9,12 +9,25 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="PDFsharp" Version="6.2.4" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="..\..\UsersDatabase\UsersAccounts.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>UsersDatabase\UsersAccounts.json</TargetPath>
+    </Content>
+    <Content Include="Assets\Fonts\NotoSans-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Assets\Fonts\NotoSans-Regular.ttf</TargetPath>
+    </Content>
+    <Content Include="Assets\Fonts\NotoSans-Bold.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Assets\Fonts\NotoSans-Bold.ttf</TargetPath>
+    </Content>
+    <Content Include="Assets\Fonts\NotoSans-LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Assets\Fonts\NotoSans-LICENSE.txt</TargetPath>
     </Content>
   </ItemGroup>
 

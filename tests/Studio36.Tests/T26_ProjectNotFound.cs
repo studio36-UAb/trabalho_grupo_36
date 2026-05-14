@@ -4,7 +4,7 @@ public static class T26_ProjectNotFound
 {
     public static void Run()
     {
-        string output = TestHelper.RunApplication("1\nadmin\nadmin123\n\n4\n999\n\n\n5\n3");
+        string output = TestHelper.RunApplication("1\nadmin\nadmin123\n\n4\n999\n\n\n7\n3");
 
         TestHelper.AssertContains(output, "Login successful.");
         TestHelper.AssertContains(output, "Please enter the project ID:");
