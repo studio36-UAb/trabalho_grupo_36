@@ -6,7 +6,7 @@ Repositório do projeto de grupo da unidade curricular **21179 - Laboratório de
 
 ## Sobre o projeto
 
-O Studio 36 é uma aplicação de consola desenvolvida em C# para **gestão de projetos e tarefas**. Permite autenticar utilizadores, gerir projetos, tarefas e membros de equipa, e gerar relatórios em formato PDF. A aplicação segue o padrão arquitetónico **MVC (Model-View-Controller)** e utiliza o **Json.NET** para comunicação entre camadas e o **PDFsharp** para geração de relatórios.
+O Studio 36 é uma aplicação de consola desenvolvida em C# para **gestão de projetos e tarefas**. Permite autenticar utilizadores, gerir projetos, tarefas e membros de equipa, e gerar relatórios em formato PDF. A aplicação segue o padrão arquitetónico **MVC (Model-View-Controller)** e utiliza interfaces para reduzir dependências entre componentes.
 
 ---
 
@@ -44,7 +44,8 @@ O fluxo de autenticação já se encontra validado por testes automatizados. A a
 | Visual Studio | Ambiente de desenvolvimento |
 | GitHub | Controlo de versões e colaboração |
 | Json.NET | Serialização/desserialização de dados JSON |
-| PDFsharp | Geração de relatórios em PDF |
+| PDFsharp | Geração de relatórios de projeto em PDF |
+| Noto Sans | Fonte embutida usada nos relatórios PDF |
 
 ---
 
@@ -81,18 +82,20 @@ Para reduzir dependências estruturais, foram criadas interfaces nas fronteiras 
 
 - `IView` define o contrato usado pelo `Controller` para comunicar com a View
 - `IModel` define o contrato usado pelo `Controller` para comunicar com o Model
+- `IReportGenerator` define o contrato usado pelo `Controller` para gerar relatórios sem depender de uma implementação concreta de PDF
 
 Assim, o `Controller` trabalha com:
 
 ```csharp
 private readonly IModel model;
 private readonly IView view;
+private readonly IReportGenerator reportGenerator;
 ```
 
 e recebe as dependências pelo construtor:
 
 ```csharp
-public Controller(IModel model, IView view)
+public Controller(IModel model, IView view, IReportGenerator reportGenerator)
 ```
 
 No arranque da aplicação, as implementações concretas são criadas e injetadas:
@@ -100,8 +103,9 @@ No arranque da aplicação, as implementações concretas são criadas e injetad
 ```csharp
 IModel model = new Model();
 IView view = new View();
+IReportGenerator reportGenerator = new PdfReportGenerator();
 
-Controller controller = new(model, view);
+Controller controller = new(model, view, reportGenerator);
 ```
 
 Com esta abordagem, uma futura substituição da View de consola por outra implementação, ou do Model atual por outro mecanismo de dados, pode ser feita com menor impacto no `Controller`, desde que as novas classes respeitem os contratos definidos.
@@ -124,7 +128,7 @@ dotnet run --project .\src\Studio36\Studio36.csproj
 
 O projeto inclui uma aplicação de consola independente para execução de testes automatizados, localizada em tests/Studio36.Tests.
 
-Estes testes validam o comportamento atualmente implementado na aplicação, nomeadamente a apresentação do menu inicial, a saída da aplicação, o fluxo básico de autenticação, o acesso à opção de registo, o tratamento de entradas inválidas, a criação de projetos e o fluxo de erro na listagem de tarefas por projeto.
+Estes testes validam o comportamento atualmente implementado na aplicação, nomeadamente a apresentação do menu inicial, a saída da aplicação, o fluxo básico de autenticação, o acesso à opção de registo, o tratamento de entradas inválidas, os fluxos MVC de criação, listagem, edição e eliminação de projetos, geração de relatórios, e o fluxo de erro na listagem de tarefas por projeto.
 
 ## Executar todos os testes
 
@@ -167,16 +171,35 @@ Testes atualmente disponíveis:
 | T30 | Editar projeto válido |
 | T31 | Controller depende de IModel e IView |
 | T32 | Controller funciona com implementações fake das interfaces |
+| T33 | Fluxo MVC completo na criação de projeto |
+| T34 | Fluxo MVC completo na listagem de projetos |
+| T35 | Fluxo MVC completo na edição de projeto válido |
+| T36 | Fluxo MVC na edição de projeto inexistente |
+| T37 | Fluxo MVC na edição de projeto com nome vazio |
+| T38 | Eliminar projeto válido |
+| T39 | Fluxo MVC completo na geração de relatório |
+| T40 | Gerar relatório válido |
+| T41 | Gerar relatório de projeto inexistente |
 
 Ao executar um teste com sucesso, deverá ser apresentada uma mensagem de aprovação correspondente ao respetivo identificador.
 
 Os testes T26 e T27 validam especificamente a opção "List tasks by project" no menu principal. O T26 confirma que um `idProjeto` inexistente aciona o `ProjectNotFoundException`, apresenta a mensagem de erro, regista a ocorrência em log e mostra a lista atualizada de projetos. O T27 confirma que um ID não numérico é rejeitado com uma mensagem adequada, sem encerramento abrupto da aplicação.
 
-Os testes T18, T19, T28, T29 e T30 validam o módulo inicial de projetos. O T18 confirma que um projeto sem nome é rejeitado. O T19 confirma que uma data de fim anterior à data de início é rejeitada. O T28 valida o fluxo de criação de um projeto válido a partir do menu principal, confirmando que o novo projeto recebe um ID e fica disponível para operações seguintes, como a listagem de tarefas. O T29 confirma que a opção "List projects" apresenta a lista de projetos existentes. O T30 confirma que a opção "Edit project" atualiza os dados de um projeto existente.
+Os testes T18, T19, T28, T29 e T30 validam o módulo inicial de projetos através da aplicação de consola. O T18 confirma que um projeto sem nome é rejeitado. O T19 confirma que uma data de fim anterior à data de início é rejeitada. O T28 valida o fluxo de criação de um projeto válido a partir do menu principal, confirmando que o novo projeto recebe um ID e fica disponível para operações seguintes, como a listagem de tarefas. O T29 confirma que a opção "List projects" apresenta a lista de projetos existentes. O T30 confirma que a opção "Edit project" atualiza os dados de um projeto existente.
 
 Os testes T31 e T32 validam a evolução arquitetónica baseada em interfaces. O T31 confirma que o `Controller` depende de `IModel` e `IView`. O T32 usa implementações fake dessas interfaces para confirmar que o `Controller` consegue funcionar com outros objetos que cumpram os contratos, sem depender diretamente das classes concretas `Model` e `View`.
 
-Nesta fase, os testes incidem apenas sobre funcionalidades já implementadas. Funcionalidades futuras, como eliminação de projetos, gestão completa de tarefas, membros, persistência em JSON e geração de relatórios PDF, deverão ser testadas quando a respetiva implementação estiver concluída.
+Os testes T33 e T34 validam fluxos MVC completos com View fake e Model real. O T33 confirma o percurso de criação de projeto: a View envia `CreateProjectRequestData`, o Controller encaminha o pedido, o Model guarda o projeto, devolve o resultado e a View recebe a mensagem final. O T34 confirma o percurso de listagem de projetos: a View pede a lista, o Controller consulta o Model e a View recebe a lista através de `ShowProjectList`.
+
+Os testes T35, T36 e T37 validam o fluxo MVC de edição de projetos. O T35 confirma a edição válida de um projeto existente. O T36 confirma o tratamento de erro quando o `idProjeto` não existe. O T37 confirma que um projeto com nome vazio é rejeitado e que os dados originais permanecem inalterados.
+
+O teste T38 valida o fluxo de eliminação de projeto através do menu da aplicação. Confirma que a opção "Delete project" pede o `idProjeto`, elimina o projeto existente, apresenta a mensagem de sucesso e que a listagem seguinte já não mostra o projeto removido.
+
+Os testes T39, T40 e T41 validam o fluxo de geração de relatórios. O T39 confirma o percurso MVC completo com View fake, Model real e gerador de relatório fake. O T40 confirma que a opção "Generate report" gera um ficheiro PDF para um projeto existente. O T41 confirma que a tentativa de gerar relatório para um projeto inexistente apresenta erro adequado.
+
+Os relatórios PDF são gerados com PDFsharp através do `PdfReportGenerator`. Para evitar dependência das fontes instaladas no sistema operativo, o projeto inclui a fonte Noto Sans em `src/Studio36/Assets/Fonts` e usa um `Studio36FontResolver`. Isto torna a geração de PDF mais previsível em Windows, macOS e Linux.
+
+Nesta fase, os testes incidem apenas sobre funcionalidades já implementadas. Funcionalidades futuras, como gestão completa de tarefas, membros e persistência em JSON, deverão ser testadas quando a respetiva implementação estiver concluída.
 
 ## Modelo de desenvolvimento
 

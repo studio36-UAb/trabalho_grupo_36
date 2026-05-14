@@ -31,6 +31,7 @@ namespace Studio36.ModelComponent
         public event Action<SignUpResultData>? SendSignUpState;
         public event Action<CreateProjectResultData>? SendProjectCreationState;
         public event Action<EditProjectResultData>? SendProjectEditionState;
+        public event Action<DeleteProjectResultData>? SendProjectDeletionState;
 
         public Model()
         {
@@ -99,6 +100,36 @@ namespace Studio36.ModelComponent
                 true,
                 request.IdProjeto,
                 $"Project {request.IdProjeto} updated successfully."));
+        }
+
+        public void DeleteProject(int idProjeto)
+        {
+            Project projeto = GetProjectById(idProjeto);
+
+            projetos.Remove(projeto);
+            tarefasPorProjeto.Remove(idProjeto);
+
+            SendProjectDeletionState?.Invoke(new DeleteProjectResultData(
+                true,
+                idProjeto,
+                $"Project {idProjeto} deleted successfully."));
+        }
+
+        public ProjectReportData GetProjectReportData(int idProjeto)
+        {
+            Project projeto = GetProjectById(idProjeto);
+
+            List<string> tarefas = tarefasPorProjeto.ContainsKey(idProjeto)
+                ? new List<string>(tarefasPorProjeto[idProjeto])
+                : new List<string>();
+
+            return new ProjectReportData(
+                projeto.Id,
+                projeto.Name,
+                projeto.Description,
+                projeto.StartDate,
+                projeto.EndDate,
+                tarefas);
         }
 
         private void ValidateLoginInput(string email, string password)
