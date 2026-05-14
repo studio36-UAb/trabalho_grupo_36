@@ -1,19 +1,20 @@
 ﻿using Studio36.DTOs;
 using Studio36.ModelComponent;
-using Studio36.ViewComponent;
+using Studio36.ModelComponent.Interfaces;
+using Studio36.ViewComponent.Interfaces;
 
 namespace Studio36.ControllerComponent
 {
     public class Controller
     {
-        readonly Model model;
-        readonly View view;
+        readonly IModel model;
+        readonly IView view;
         readonly ModelLog modelLog;
 
-        public Controller()
+        public Controller(IModel model, IView view)
         {
-            model = new Model();
-            view = new View();
+            this.model = model;
+            this.view = view;
             modelLog = new ModelLog();
 
             view.UserAttemptLogin += ProcessLogin;
