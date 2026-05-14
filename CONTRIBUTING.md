@@ -94,31 +94,37 @@ Exemplo (para o teste T01 Apresentação do menu inicial):
 dotnet run --project .\tests\Studio36.Tests\Studio36.Tests.csproj -- T01
 ```
 
-Testes atualmente disponíveis
-ID	Descrição
-T01	Apresentação do menu inicial
-T02	Terminar aplicação pela opção 3
-T03	Login com credenciais válidas
-T04	Login com credenciais inválidas
-T05	Acesso à opção de registo
-T06	Opção inválida no menu
-T07	Input não numérico no menu
-T08	Input vazio no menu
-T09	Model valida credenciais válidas
-T10	Model rejeita credenciais inválidas
-T18	Criar projeto sem nome
-T19	Criar projeto com datas inválidas
-T26	Listar tarefas de projeto inexistente
-T27	Introduzir ID de projeto não numérico na listagem de tarefas
-T28	Criar projeto válido
-T29	Listar projetos
-T30	Editar projeto válido
+Testes atualmente disponíveis:
+
+| ID | Descrição |
+|---|---|
+| T01 | Apresentação do menu inicial |
+| T02 | Terminar aplicação pela opção 3 |
+| T03 | Login com credenciais válidas |
+| T04 | Login com credenciais inválidas |
+| T05 | Acesso à opção de registo |
+| T06 | Opção inválida no menu |
+| T07 | Input não numérico no menu |
+| T08 | Input vazio no menu |
+| T09 | Model valida credenciais válidas |
+| T10 | Model rejeita credenciais inválidas |
+| T18 | Criar projeto sem nome |
+| T19 | Criar projeto com datas inválidas |
+| T26 | Listar tarefas de projeto inexistente |
+| T27 | Introduzir ID de projeto não numérico na listagem de tarefas |
+| T28 | Criar projeto válido |
+| T29 | Listar projetos |
+| T30 | Editar projeto válido |
+| T31 | Controller depende de IModel e IView |
+| T32 | Controller funciona com implementações fake das interfaces |
 
 Ao executar um teste com sucesso, deverá ser apresentada uma mensagem de aprovação correspondente ao respetivo identificador.
 
 Os testes T26 e T27 cobrem o fluxo de listagem de tarefas por projeto. O T26 valida o tratamento de `ProjectNotFoundException`, incluindo mensagem de erro, registo em log e apresentação da lista atualizada de projetos. O T27 valida a rejeição de IDs de projeto não numéricos, garantindo que a aplicação continua em execução.
 
 Os testes T18, T19, T28, T29 e T30 cobrem o módulo inicial de projetos. O T18 confirma que um projeto sem nome é rejeitado. O T19 confirma que uma data de fim anterior à data de início é rejeitada. O T28 confirma que a opção "New Project" recolhe os dados necessários, cria o projeto com sucesso e permite consultar a lista de tarefas do projeto criado. O T29 confirma que a opção "List projects" apresenta os projetos existentes. O T30 confirma que a opção "Edit project" atualiza os dados de um projeto existente.
+
+Os testes T31 e T32 cobrem a evolução arquitetónica baseada em interfaces. O T31 valida que o `Controller` depende dos contratos `IModel` e `IView`. O T32 valida que o `Controller` consegue funcionar com implementações fake dessas interfaces, demonstrando que não está preso às classes concretas `Model` e `View`.
 
 ### Critério mínimo antes de abrir Pull Request
 
@@ -129,6 +135,7 @@ Antes de abrir Pull Request para `develop`, confirmar que:
 - [ ] Os testes automatizados existentes passam com sucesso
 - [ ] A alteração realizada não quebra funcionalidades já implementadas
 - [ ] O código alterado respeita a arquitetura MVC definida para o projeto
+- [ ] O `Controller` continua a depender de `IModel` e `IView`, e não diretamente das classes concretas `Model` e `View`
 - [ ] Novos fluxos de erro ou exceções relevantes têm testes automatizados associados, sempre que possível
 - [ ] A branch está atualizada em relação a `develop`
 
@@ -146,24 +153,48 @@ Não devem ser realizados merges diretos para `develop` sem revisão, aprovaçã
 
 ## Arquitetura MVC - regras de separação de camadas
 
-O projeto sgue o padrão MVC. Para manter o acoplamento baixo devem ser respeitadas as seguinte regras:
+O projeto segue o padrão MVC. Para manter o acoplamento baixo devem ser respeitadas as seguintes regras:
 
 - A **View não pode depender do Model** - não deve importar o namespace `ModelComponent` nem receber instâncias do Model
 - O **Model não pode depender da View** - não deve importar o namespace `ViewComponent`
-- Toda a comunicação entre Model e View é feita **exclusivamente através de eventos**, com os parâmetros necessarios incluidos no proprio evento
+- Toda a comunicação entre Model e View é feita **exclusivamente através de eventos**, com os parâmetros necessários incluídos no próprio evento
 - O **Controller é o único intermediário** - subscreve os eventos do Model e chama os métodos públicos da View para atualizar o ecrã
+- O **Controller deve depender das interfaces** `IModel` e `IView`, não das classes concretas `Model` e `View`
+- As classes concretas devem ser criadas no ponto de arranque da aplicação e injetadas no `Controller`
 - Exceções do Model, como `ProjectNotFoundException`, devem ser tratadas no Controller, que decide que mensagens e atualizações devem ser enviadas para a View
+
+### Interfaces entre componentes
+
+As interfaces devem representar apenas os contratos necessários para a comunicação entre componentes. Não devem ser usadas como cópias completas das classes concretas nem como listas genéricas de métodos futuros.
+
+Exemplo do padrão esperado:
+
+```csharp
+IModel model = new Model();
+IView view = new View();
+
+Controller controller = new(model, view);
+```
+
+No `Controller`, o campo deve manter o tipo da interface:
+
+```csharp
+private readonly IModel model;
+private readonly IView view;
+```
+
+Isto permite substituir futuramente a View ou o Model por outra implementação, desde que respeite o contrato definido.
 
 ### Exemplo correto de eventos com dados
 
 ```csharp
-//Model - publica estado diretamente no evento
-public event Action<bool>? SendLoginState;
-SendLoginState?.Invoke(IsLoggedIn);
+// Model - publica estado diretamente no evento
+public event Action<LoginResultData>? SendLoginState;
+SendLoginState?.Invoke(new LoginResultData(true, "Login successful."));
 
-//View - recebe dados como parâmetro, sem aceder ao Model
-public void ShowLoginResult(bool isLoggedIn) { ... }
+// View - recebe dados como parâmetro, sem aceder ao Model
+public void ShowLoginResult(bool isLoggedIn, string message) { ... }
 
-//Controller - faz a ligação
-model.SendLoginState += isLoggedIn => view.ShowLoginResult(isLoggedIn);
+// Controller - faz a ligação
+model.SendLoginState += result => view.ShowLoginResult(result.IsSuccessful, result.Message);
 ```

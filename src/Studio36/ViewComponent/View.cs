@@ -2,10 +2,11 @@
 using System.Globalization;
 using Studio36.ControllerComponent;
 using Studio36.DTOs;
+using Studio36.ViewComponent.Interfaces;
 
 namespace Studio36.ViewComponent
 {
-    public class View
+    public class View : IView
     {
         private bool isRunning = true;
         private readonly StartMenu startMenu;

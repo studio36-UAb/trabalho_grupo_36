@@ -1,5 +1,9 @@
 ﻿using Studio36.ControllerComponent;
+using Studio36.ModelComponent;
+using Studio36.ModelComponent.Interfaces;
 using Studio36.Utils;
+using Studio36.ViewComponent;
+using Studio36.ViewComponent.Interfaces;
 
 class Program
 {
@@ -7,7 +11,10 @@ class Program
     {
         try
         {
-            Controller controller = new();
+            IModel model = new Model();
+            IView view = new View();
+
+            Controller controller = new(model, view);
             controller.StartProgram();
         }
         catch (Exception ex)
