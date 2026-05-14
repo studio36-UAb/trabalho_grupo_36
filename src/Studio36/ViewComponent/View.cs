@@ -18,6 +18,8 @@ namespace Studio36.ViewComponent
         public event Action<SignUpRequestData>? UserAttemptSignUp;
         public event Action<CreateProjectRequestData>? UserRequestsProjectCreation;
         public event Action<EditProjectRequestData>? UserRequestsProjectEdition;
+        public event Action<int>? UserRequestsProjectDeletion;
+        public event Action<int>? UserRequestsProjectReport;
         public event Action? UserRequestsProjectList;
         public event Action<int>? UserRequestsProjectTasks;
 
@@ -125,6 +127,26 @@ namespace Studio36.ViewComponent
                     break;
 
                 case "5":
+                    int? projectIdToDelete = GetProjectDeletionData();
+
+                    if (projectIdToDelete.HasValue)
+                    {
+                        UserRequestsProjectDeletion?.Invoke(projectIdToDelete.Value);
+                    }
+
+                    break;
+
+                case "6":
+                    int? projectIdToReport = GetProjectReportData();
+
+                    if (projectIdToReport.HasValue)
+                    {
+                        UserRequestsProjectReport?.Invoke(projectIdToReport.Value);
+                    }
+
+                    break;
+
+                case "7":
                     CurrentState = MenuState.StartMenu;
                     break;
 
@@ -160,6 +182,18 @@ namespace Studio36.ViewComponent
         }
 
         public void ShowProjectEditionResult(string message)
+        {
+            Console.WriteLine(message);
+            Pause();
+        }
+
+        public void ShowProjectDeletionResult(string message)
+        {
+            Console.WriteLine(message);
+            Pause();
+        }
+
+        public void ShowReportResult(string message)
         {
             Console.WriteLine(message);
             Pause();
@@ -288,6 +322,36 @@ namespace Studio36.ViewComponent
 
             // Mantém a View limitada à recolha/conversão de dados, sem aplicar regras de negócio.
             return new EditProjectRequestData(idProjeto, nome, descricao, dataInicio, dataFim);
+        }
+
+        private int? GetProjectDeletionData()
+        {
+            Console.WriteLine("Delete Project");
+            Console.Write("Project ID: ");
+            string idProjetoInput = Console.ReadLine() ?? "";
+
+            if (!int.TryParse(idProjetoInput, out int idProjeto))
+            {
+                ShowErrorMessage("The project ID must be an integer.");
+                return null;
+            }
+
+            return idProjeto;
+        }
+
+        private int? GetProjectReportData()
+        {
+            Console.WriteLine("Generate Report");
+            Console.Write("Project ID: ");
+            string idProjetoInput = Console.ReadLine() ?? "";
+
+            if (!int.TryParse(idProjetoInput, out int idProjeto))
+            {
+                ShowErrorMessage("The project ID must be an integer.");
+                return null;
+            }
+
+            return idProjeto;
         }
 
         private static bool TryParseProjectDate(string value, out DateTime date)

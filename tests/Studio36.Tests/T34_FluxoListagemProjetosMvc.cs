@@ -12,7 +12,7 @@ public static class T34_FluxoListagemProjetosMvc
         Model model = new();
         FakeView view = new();
 
-        _ = new Controller(model, view);
+        _ = new Controller(model, view, new ReportGeneratorStub());
 
         view.SubmitProjectListRequest();
 
@@ -56,6 +56,18 @@ public static class T34_FluxoListagemProjetosMvc
             remove { }
         }
 
+        public event Action<int>? UserRequestsProjectDeletion
+        {
+            add { }
+            remove { }
+        }
+
+        public event Action<int>? UserRequestsProjectReport
+        {
+            add { }
+            remove { }
+        }
+
         public event Action? UserRequestsProjectList
         {
             add => userRequestsProjectList += value;
@@ -92,6 +104,14 @@ public static class T34_FluxoListagemProjetosMvc
         }
 
         public void ShowProjectEditionResult(string message)
+        {
+        }
+
+        public void ShowProjectDeletionResult(string message)
+        {
+        }
+
+        public void ShowReportResult(string message)
         {
         }
 

@@ -12,7 +12,7 @@ public static class T32_ControllerFuncionaComFakes
         FakeModel model = new();
         FakeView view = new();
 
-        _ = new Controller(model, view);
+        _ = new Controller(model, view, new ReportGeneratorStub());
 
         view.SubmitLogin(new LoginRequestData("teste@studio36.pt", "1234"));
 
@@ -60,6 +60,12 @@ public static class T32_ControllerFuncionaComFakes
             remove { }
         }
 
+        public event Action<DeleteProjectResultData>? SendProjectDeletionState
+        {
+            add { }
+            remove { }
+        }
+
         public LoginRequestData? LastLoginRequest { get; private set; }
 
         public void AreCredentialsValid(LoginRequestData request)
@@ -82,6 +88,15 @@ public static class T32_ControllerFuncionaComFakes
 
         public void EditProject(EditProjectRequestData request)
         {
+        }
+
+        public void DeleteProject(int idProjeto)
+        {
+        }
+
+        public ProjectReportData GetProjectReportData(int idProjeto)
+        {
+            return new ProjectReportData(idProjeto, "", "", DateTime.Today, DateTime.Today, new List<string>());
         }
 
         public List<string> GetProjects()
@@ -118,6 +133,18 @@ public static class T32_ControllerFuncionaComFakes
         }
 
         public event Action<EditProjectRequestData>? UserRequestsProjectEdition
+        {
+            add { }
+            remove { }
+        }
+
+        public event Action<int>? UserRequestsProjectDeletion
+        {
+            add { }
+            remove { }
+        }
+
+        public event Action<int>? UserRequestsProjectReport
         {
             add { }
             remove { }
@@ -162,6 +189,14 @@ public static class T32_ControllerFuncionaComFakes
         }
 
         public void ShowProjectEditionResult(string message)
+        {
+        }
+
+        public void ShowProjectDeletionResult(string message)
+        {
+        }
+
+        public void ShowReportResult(string message)
         {
         }
 

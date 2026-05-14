@@ -13,7 +13,9 @@ namespace Studio36.ViewComponent
             Console.WriteLine("2. List projects");
             Console.WriteLine("3. Edit project");
             Console.WriteLine("4. List tasks by project");
-            Console.WriteLine("5. Back");
+            Console.WriteLine("5. Delete project");
+            Console.WriteLine("6. Generate report");
+            Console.WriteLine("7. Back");
             Console.Write("Selection: ");
         }
 
@@ -24,7 +26,7 @@ namespace Studio36.ViewComponent
 
             if (input == null)
             {
-                return "5";
+                return "7";
             }
 
             return input.Trim();
