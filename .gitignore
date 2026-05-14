@@ -2,6 +2,9 @@
 bin/
 obj/
 
+# Local .NET/SDK cache
+.dotnet/
+
 # Visual Studio
 .vs/
 *.user
