@@ -2,7 +2,7 @@ using Studio36.ModelComponent.Entities;
 
 namespace Studio36.ModelComponent.Interfaces
 {
-    public interface IProjectService
+    public interface IProjectAndTaskService
     {
         List<Project> LoadProjects();
         Dictionary<int, List<TaskItem>> LoadTasks();

@@ -1,17 +1,16 @@
 using Newtonsoft.Json;
 using Studio36.ModelComponent.Entities;
-using Studio36.Interfaces;
 using Studio36.ModelComponent.Interfaces;
 using Studio36.Utils;
 
 namespace Studio36.ModelComponent.Services
 {
-    public class JsonProjectService : IProjectService
+    public class JsonProjectAndTaskService : IProjectAndTaskService
     {
         private readonly string _projectsFilePath;
         private readonly string _tasksFilePath;
 
-        public JsonProjectService(string projectsFilePath, string tasksFilePath)
+        public JsonProjectAndTaskService(string projectsFilePath, string tasksFilePath)
         {
             _projectsFilePath = Path.Combine(AppContext.BaseDirectory, projectsFilePath);
             _tasksFilePath = Path.Combine(AppContext.BaseDirectory, tasksFilePath);

@@ -10,6 +10,7 @@ namespace Studio36.ControllerComponent
         readonly IModel model;
         readonly IView view;
         readonly IReportGenerator reportGenerator;
+
         readonly ModelLog modelLog;
 
         public Controller(IModel model, IView view, IReportGenerator reportGenerator)
@@ -26,20 +27,23 @@ namespace Studio36.ControllerComponent
 
             view.UserRequestsProjectCreation += ProcessProjectCreationRequest;
             view.UserRequestsProjectList += ProcessProjectListRequest;
-            view.UserRequestsProjectTasks += ProcessProjectTasksRequest;
             view.UserRequestsProjectEdition += ProcessProjectEditionRequest;
             view.UserRequestsProjectDeletion += ProcessProjectDeletionRequest;
-            view.UserRequestsProjectReport += ProcessProjectReportRequest;
 
+            view.UserRequestsProjectTasks += ProcessProjectTasksRequest;
             view.UserRequestsTaskAddition += ProcessTaskAdditionRequest;
             view.UserRequestsTaskEdition += ProcessTaskEditionRequest;
             view.UserRequestsTaskDeletion += ProcessTaskDeletionRequest;
-            
+
+            view.UserRequestsProjectReport += ProcessProjectReportRequest;
+
             model.SendLoginState += OnLoginStateReceived;
             model.SendSignUpState += OnSignUpStateReceived;
+
             model.SendProjectCreationState += OnProjectCreationStateReceived;
             model.SendProjectEditionState += OnProjectEditionStateReceived;
             model.SendProjectDeletionState += OnProjectDeletionStateReceived;
+
             model.SendTaskOperationState += OnTaskOperationStateReceived;
 
         }
@@ -53,6 +57,7 @@ namespace Studio36.ControllerComponent
         {
             view.ShowSignUpResult(result.Message);
         }
+
 
         private void OnProjectCreationStateReceived(CreateProjectResultData result)
         {
@@ -69,14 +74,21 @@ namespace Studio36.ControllerComponent
             view.ShowProjectDeletionResult(result.Message);
         }
 
+
         private void OnTaskOperationStateReceived(TaskOperationResultData result)
         {
             view.ShowTaskOperationResult(result);
         }
 
+
         private void ProcessProjectCreationRequest(CreateProjectRequestData request)
         {
             CreateProject(request.Name, request.Description, request.StartDate, request.EndDate);
+        }
+
+        private void ProcessProjectListRequest()
+        {
+            ListProjects();
         }
 
         private void ProcessProjectEditionRequest(EditProjectRequestData request)
@@ -89,9 +101,10 @@ namespace Studio36.ControllerComponent
             DeleteProject(projectId);
         }
 
-        private void ProcessProjectReportRequest(int projectId)
+
+        private void ProcessProjectTasksRequest(int projectId)
         {
-            GenerateReport(projectId);
+            ListTasks(projectId);
         }
 
         private void ProcessTaskAdditionRequest(int projectId, string description)
@@ -109,15 +122,12 @@ namespace Studio36.ControllerComponent
             DeleteTask(projectId, taskId);
         }
 
-        private void ProcessProjectTasksRequest(int projectId)
+       
+        private void ProcessProjectReportRequest(int projectId)
         {
-            ListTasks(projectId);
+            GenerateReport(projectId);
         }
 
-        private void ProcessProjectListRequest()
-        {
-            ListProjects();
-        }
 
         public void StartProgram()
         {
@@ -152,18 +162,7 @@ namespace Studio36.ControllerComponent
             }
         }
 
-        // AUTHENTICATION
-        public bool Login(string email, string password)
-        {
-            return false;
-        }
 
-        public bool Register(string email, string password)
-        {
-            return false;
-        }
-
-        // PROJECTS
         public void CreateProject(string name, string description, DateTime startDate, DateTime endDate)
         {
             try
@@ -238,27 +237,6 @@ namespace Studio36.ControllerComponent
             }
         }
 
-        // TASKS
-        public void AddTask(int projectId, string description)
-        {
-            try
-            {
-                model.AddTask(projectId, description);
-            }
-            catch (ProjectNotFoundException ex)
-            {
-                modelLog.LogRegistry(ex, projectId);
-                view.ShowErrorMessage(ex.Message);
-            }
-            catch (ArgumentException ex)
-            {
-                view.ShowErrorMessage(ex.Message);
-            }
-            catch (Exception)
-            {
-                view.ShowErrorMessage("Unexpected error while adding task.");
-            }
-        }
 
         public List<string> ListTasks(int projectId)
         {
@@ -283,6 +261,27 @@ namespace Studio36.ControllerComponent
             {
                 view.ShowErrorMessage("Unexpected error while listing project tasks.");
                 return new List<string>();
+            }
+        }
+
+        public void AddTask(int projectId, string description)
+        {
+            try
+            {
+                model.AddTask(projectId, description);
+            }
+            catch (ProjectNotFoundException ex)
+            {
+                modelLog.LogRegistry(ex, projectId);
+                view.ShowErrorMessage(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                view.ShowErrorMessage(ex.Message);
+            }
+            catch (Exception)
+            {
+                view.ShowErrorMessage("Unexpected error while adding task.");
             }
         }
 
@@ -327,6 +326,7 @@ namespace Studio36.ControllerComponent
                 view.ShowErrorMessage("Unexpected error while deleting task.");
             }
         }
+
 
         public void GenerateReport(int projectId)
         {

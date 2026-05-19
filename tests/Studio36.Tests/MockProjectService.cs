@@ -3,7 +3,7 @@ using Studio36.ModelComponent.Interfaces;
 
 namespace Studio36.Tests;
 
-public class MockProjectService : IProjectService
+public class MockProjectService : IProjectAndTaskService
 {
     public List<Project> Projects { get; set; } = new()
     {
