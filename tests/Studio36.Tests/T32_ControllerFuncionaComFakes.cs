@@ -1,7 +1,7 @@
 using Studio36.ControllerComponent;
 using Studio36.DTOs;
 using Studio36.ModelComponent.Interfaces;
-using Studio36.ViewComponent.Interfaces;
+using Studio36.Interfaces;
 
 namespace Studio36.Tests;
 
@@ -66,6 +66,12 @@ public static class T32_ControllerFuncionaComFakes
             remove { }
         }
 
+        public event Action<TaskOperationResultData>? SendTaskOperationState
+        {
+            add { }
+            remove { }
+        }
+
         public LoginRequestData? LastLoginRequest { get; private set; }
 
         public void AreCredentialsValid(LoginRequestData request)
@@ -91,6 +97,18 @@ public static class T32_ControllerFuncionaComFakes
         }
 
         public void DeleteProject(int idProjeto)
+        {
+        }
+
+        public void AddTask(int projectId, string taskDescription)
+        {
+        }
+
+        public void EditTask(int projectId, int taskIndex, string newDescription)
+        {
+        }
+
+        public void DeleteTask(int projectId, int taskIndex)
         {
         }
 
@@ -162,6 +180,24 @@ public static class T32_ControllerFuncionaComFakes
             remove { }
         }
 
+        public event Action<int, string>? UserRequestsTaskAddition
+        {
+            add { }
+            remove { }
+        }
+
+        public event Action<int, int, string>? UserRequestsTaskEdition
+        {
+            add { }
+            remove { }
+        }
+
+        public event Action<int, int>? UserRequestsTaskDeletion
+        {
+            add { }
+            remove { }
+        }
+
         public bool? LastLoginResult { get; private set; }
         public string? LastLoginMessage { get; private set; }
 
@@ -197,6 +233,10 @@ public static class T32_ControllerFuncionaComFakes
         }
 
         public void ShowReportResult(string message)
+        {
+        }
+
+        public void ShowTaskOperationResult(TaskOperationResultData result)
         {
         }
 

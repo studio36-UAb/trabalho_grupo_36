@@ -4,7 +4,7 @@ using Studio36.ModelComponent.Interfaces;
 using Studio36.ReportComponent;
 using Studio36.ReportComponent.Interfaces;
 using Studio36.ViewComponent;
-using Studio36.ViewComponent.Interfaces;
+using Studio36.Interfaces;
 
 namespace Studio36.Tests;
 
@@ -23,7 +23,9 @@ public static class TestHelper
             Console.SetIn(testInput);
             Console.SetOut(testOutput);
 
-            IModel model = new Model();
+            var accountService = new MockAccountService();
+            var projectService = new MockProjectService();
+            IModel model = new Model(accountService, accountService, projectService);
             IView view = new View();
             IReportGenerator reportGenerator = new PdfReportGenerator();
 

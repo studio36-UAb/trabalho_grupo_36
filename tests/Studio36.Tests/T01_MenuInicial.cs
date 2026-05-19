@@ -6,11 +6,10 @@ public static class T01_MenuInicial
     {
         string output = TestHelper.RunApplication("3");
 
-        TestHelper.AssertContains(output, "Welcome to Studio36!");
-        TestHelper.AssertContains(output, "Please select an option:");
-        TestHelper.AssertContains(output, "1. Log in");
-        TestHelper.AssertContains(output, "2. Sign up");
-        TestHelper.AssertContains(output, "3. Exit");
-        TestHelper.AssertContains(output, "Selection:");
+        TestHelper.AssertContains(output, "Welcome to Studio36");
+        TestHelper.AssertContains(output, "Log in to your account");
+        TestHelper.AssertContains(output, "Create a new account");
+        TestHelper.AssertContains(output, "Exit application");
+        TestHelper.AssertContains(output, "Selection > ");
     }
 }
