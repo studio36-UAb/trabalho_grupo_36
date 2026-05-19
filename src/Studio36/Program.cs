@@ -34,16 +34,16 @@ class Program
         {
             UIUtils.Info("> Connecting to persistence layer...");
             var accountService = new JsonAccountService(@"UsersDatabase/UsersAccounts.json");
-            var projectService = new JsonProjectService(@"ProjectsAndTasksDatabase/Projects.json", @"ProjectsAndTasksDatabase/Tasks.json");
+            var projectAndTaskService = new JsonProjectAndTaskService(@"ProjectsAndTasksDatabase/Projects.json", @"ProjectsAndTasksDatabase/Tasks.json");
 
             UIUtils.Info("> Bootstrapping core model...");
-            IModel model = new Model(accountService, accountService, projectService);
+            IModel model = new Model(accountService, accountService, projectAndTaskService);
             
             UIUtils.Info("> Initializing user interface...");
             IView view = new View();
 
             UIUtils.Info("> Configuring report engines...");
-            IReportGenerator reportGenerator = new PdfReportGenerator();
+            IReportGenerator reportGenerator = new PdfReportGenerator(@"../../../../../Reports");
 
             UIUtils.Info("> Wiring controller...");
             Controller controller = new(model, view, reportGenerator);

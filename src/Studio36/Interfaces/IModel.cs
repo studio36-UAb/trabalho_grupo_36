@@ -13,6 +13,7 @@ namespace Studio36.Interfaces
 
         void AreCredentialsValid(LoginRequestData request);
         void RegisterUser(SignUpRequestData request);
+
         void CreateProject(CreateProjectRequestData request);
         void EditProject(EditProjectRequestData request);
         void DeleteProject(int projectId);

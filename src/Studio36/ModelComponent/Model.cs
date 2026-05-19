@@ -15,7 +15,7 @@ namespace Studio36.ModelComponent
         private readonly IAuthenticationService authenticationService;
         private readonly IRegistrationService registrationService;
 
-        private readonly IProjectService projectService;
+        private readonly IProjectAndTaskService projectAndTaskService;
 
         public bool IsLoggedIn { get; set; } = false;
 
@@ -26,13 +26,14 @@ namespace Studio36.ModelComponent
         public event Action<DeleteProjectResultData>? SendProjectDeletionState;
         public event Action<TaskOperationResultData>? SendTaskOperationState;
 
-        public Model(IAuthenticationService authService, IRegistrationService regService, IProjectService projService)
+        public Model(IAuthenticationService authService, IRegistrationService regService, IProjectAndTaskService projAndTaskService)
         {
             authenticationService = authService;
             registrationService = regService;
-            projectService = projService;
-            projects = projectService.LoadProjects();
-            tasksByProject = projectService.LoadTasks();
+            projectAndTaskService = projAndTaskService;
+
+            projects = projectAndTaskService.LoadProjects();
+            tasksByProject = projectAndTaskService.LoadTasks();
         }
 
         public void AreCredentialsValid(LoginRequestData request)
@@ -57,7 +58,6 @@ namespace Studio36.ModelComponent
 
             int projectId = GetNextProjectId();
 
-            // Save the project as a domain entity to support future CRUD flows.
             projects.Add(new Project(
                 projectId,
                 request.Name.Trim(),
@@ -66,7 +66,7 @@ namespace Studio36.ModelComponent
                 request.EndDate));
             tasksByProject.Add(projectId, new List<TaskItem>());
 
-            projectService.SaveData(projects, tasksByProject);
+            projectAndTaskService.SaveData(projects, tasksByProject);
 
             SendProjectCreationState?.Invoke(new CreateProjectResultData(
                 true,
@@ -80,14 +80,13 @@ namespace Studio36.ModelComponent
 
             Project project = GetProjectById(request.ProjectId);
 
-            // Update the existing entity without creating a new project or changing its ID.
             project.UpdateDetails(
                 request.Name.Trim(),
                 request.Description.Trim(),
                 request.StartDate,
                 request.EndDate);
 
-            projectService.SaveData(projects, tasksByProject);
+            projectAndTaskService.SaveData(projects, tasksByProject);
 
             SendProjectEditionState?.Invoke(new EditProjectResultData(
                 true,
@@ -102,7 +101,7 @@ namespace Studio36.ModelComponent
             projects.Remove(project);
             tasksByProject.Remove(projectId);
 
-            projectService.SaveData(projects, tasksByProject);
+            projectAndTaskService.SaveData(projects, tasksByProject);
 
             SendProjectDeletionState?.Invoke(new DeleteProjectResultData(
                 true,
@@ -129,7 +128,7 @@ namespace Studio36.ModelComponent
 
             int taskId = GetNextTaskId();
             tasksByProject[projectId].Add(new TaskItem(taskId, taskDescription.Trim()));
-            projectService.SaveData(projects, tasksByProject);
+            projectAndTaskService.SaveData(projects, tasksByProject);
 
             SendTaskOperationState?.Invoke(new TaskOperationResultData(true, $"Task added successfully with ID {taskId}."));
         }
@@ -158,7 +157,7 @@ namespace Studio36.ModelComponent
             }
 
             task.UpdateDescription(newDescription.Trim());
-            projectService.SaveData(projects, tasksByProject);
+            projectAndTaskService.SaveData(projects, tasksByProject);
 
             SendTaskOperationState?.Invoke(new TaskOperationResultData(true, "Task updated successfully."));
         }
@@ -182,7 +181,7 @@ namespace Studio36.ModelComponent
             }
 
             tasksByProject[projectId].Remove(task);
-            projectService.SaveData(projects, tasksByProject);
+            projectAndTaskService.SaveData(projects, tasksByProject);
 
             SendTaskOperationState?.Invoke(new TaskOperationResultData(true, "Task removed successfully."));
         }
@@ -256,7 +255,6 @@ namespace Studio36.ModelComponent
 
         private int GetNextProjectId()
         {
-            // Calculate the next ID based on the projects already existing in the Model's state.
             if (projects.Count == 0)
             {
                 return 1;
@@ -267,13 +265,11 @@ namespace Studio36.ModelComponent
 
         public List<string> GetTasksByProject(int projectId)
         {
-            // Check if the project exists in the current Model state.
             if (!ProjectExists(projectId))
             {
                 throw new ProjectNotFoundException(projectId);
             }
 
-            // If the project exists but has no tasks yet, return an empty list.
             if (!tasksByProject.ContainsKey(projectId))
             {
                 return new List<string>();
