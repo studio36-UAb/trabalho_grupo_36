@@ -6,8 +6,8 @@ public static class T04_LoginInvalido
     {
         string output = TestHelper.RunApplication("1\nadmin\nbadpassword\n\n3");
 
-        TestHelper.AssertContains(output, "Please enter your username:");
-        TestHelper.AssertContains(output, "Please enter your password:");
+        TestHelper.AssertContains(output, "Username: ");
+        TestHelper.AssertContains(output, "Password: ");
         TestHelper.AssertContains(output, "Invalid password.");
     }
 }

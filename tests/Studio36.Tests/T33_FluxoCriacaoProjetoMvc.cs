@@ -1,7 +1,7 @@
 using Studio36.ControllerComponent;
 using Studio36.DTOs;
 using Studio36.ModelComponent;
-using Studio36.ViewComponent.Interfaces;
+using Studio36.Interfaces;
 
 namespace Studio36.Tests;
 
@@ -9,7 +9,8 @@ public static class T33_FluxoCriacaoProjetoMvc
 {
     public static void Run()
     {
-        Model model = new();
+        var mockService = new MockProjectService();
+        Model model = new(new MockAccountService(), new MockAccountService(), mockService);
         FakeView view = new();
 
         _ = new Controller(model, view, new ReportGeneratorStub());
@@ -85,6 +86,24 @@ public static class T33_FluxoCriacaoProjetoMvc
             remove { }
         }
 
+        public event Action<int, string>? UserRequestsTaskAddition
+        {
+            add { }
+            remove { }
+        }
+
+        public event Action<int, int, string>? UserRequestsTaskEdition
+        {
+            add { }
+            remove { }
+        }
+
+        public event Action<int, int>? UserRequestsTaskDeletion
+        {
+            add { }
+            remove { }
+        }
+
         public string? LastProjectCreationMessage { get; private set; }
 
         public void SubmitProjectCreation(CreateProjectRequestData request)
@@ -118,6 +137,10 @@ public static class T33_FluxoCriacaoProjetoMvc
         }
 
         public void ShowReportResult(string message)
+        {
+        }
+
+        public void ShowTaskOperationResult(TaskOperationResultData result)
         {
         }
 

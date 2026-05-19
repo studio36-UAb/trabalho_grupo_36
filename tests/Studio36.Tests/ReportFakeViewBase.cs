@@ -1,5 +1,5 @@
 using Studio36.DTOs;
-using Studio36.ViewComponent.Interfaces;
+using Studio36.Interfaces;
 
 namespace Studio36.Tests;
 
@@ -55,6 +55,24 @@ public class ReportFakeViewBase : IView
         remove { }
     }
 
+    public event Action<int, string>? UserRequestsTaskAddition
+    {
+        add { }
+        remove { }
+    }
+
+    public event Action<int, int, string>? UserRequestsTaskEdition
+    {
+        add { }
+        remove { }
+    }
+
+    public event Action<int, int>? UserRequestsTaskDeletion
+    {
+        add { }
+        remove { }
+    }
+
     public string? LastReportMessage { get; private set; }
     public string? LastErrorMessage { get; private set; }
 
@@ -90,6 +108,10 @@ public class ReportFakeViewBase : IView
     public void ShowReportResult(string message)
     {
         LastReportMessage = message;
+    }
+
+    public void ShowTaskOperationResult(TaskOperationResultData result)
+    {
     }
 
     public void ShowErrorMessage(string message)

@@ -17,6 +17,14 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>UsersDatabase\UsersAccounts.json</TargetPath>
     </Content>
+    <Content Include="..\..\ProjectsAndTasksDatabase\Projects.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>ProjectsAndTasksDatabase\Projects.json</TargetPath>
+    </Content>
+    <Content Include="..\..\ProjectsAndTasksDatabase\Tasks.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>ProjectsAndTasksDatabase\Tasks.json</TargetPath>
+    </Content>
     <Content Include="Assets\Fonts\NotoSans-Regular.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>Assets\Fonts\NotoSans-Regular.ttf</TargetPath>

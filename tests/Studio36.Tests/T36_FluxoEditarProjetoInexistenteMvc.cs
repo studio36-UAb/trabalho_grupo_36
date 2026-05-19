@@ -8,7 +8,7 @@ public static class T36_FluxoEditarProjetoInexistenteMvc
 {
     public static void Run()
     {
-        Model model = new();
+        Model model = new(new MockAccountService(), new MockAccountService(), new MockProjectService());
         EditProjectFakeViewBase view = new();
 
         _ = new Controller(model, view, new ReportGeneratorStub());
