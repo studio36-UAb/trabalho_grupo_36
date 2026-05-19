@@ -1,6 +1,6 @@
 using Studio36.DTOs;
 
-namespace Studio36.ViewComponent.Interfaces
+namespace Studio36.Interfaces
 {
     public interface IView
     {
@@ -12,6 +12,9 @@ namespace Studio36.ViewComponent.Interfaces
         event Action<int>? UserRequestsProjectReport;
         event Action? UserRequestsProjectList;
         event Action<int>? UserRequestsProjectTasks;
+        event Action<int, string>? UserRequestsTaskAddition;
+        event Action<int, int, string>? UserRequestsTaskEdition;
+        event Action<int, int>? UserRequestsTaskDeletion;
 
         void Run();
         void ShowLoginResult(bool isLoggedIn, string message);
@@ -20,9 +23,10 @@ namespace Studio36.ViewComponent.Interfaces
         void ShowProjectEditionResult(string message);
         void ShowProjectDeletionResult(string message);
         void ShowReportResult(string message);
+        void ShowTaskOperationResult(TaskOperationResultData result);
         void ShowErrorMessage(string message);
-        void RefreshProjectList(List<string> listaProjetos);
-        void ShowProjectList(List<string> listaProjetos);
-        void ShowTaskList(List<string> tarefas);
+        void RefreshProjectList(List<string> projectList);
+        void ShowProjectList(List<string> projectList);
+        void ShowTaskList(List<string> tasks);
     }
 }

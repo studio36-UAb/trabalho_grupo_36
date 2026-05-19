@@ -13,7 +13,7 @@ public sealed class ReportGeneratorStub : IReportGenerator
 
         return new ReportResultData(
             true,
-            $"stub-project-{data.IdProjeto}.pdf",
-            $"Report generated successfully: stub-project-{data.IdProjeto}.pdf");
+            $"stub-project-{data.ProjectId}.pdf",
+            $"Report generated successfully: stub-project-{data.ProjectId}.pdf");
     }
 }

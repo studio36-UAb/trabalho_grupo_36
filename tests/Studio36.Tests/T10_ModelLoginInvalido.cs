@@ -7,7 +7,7 @@ public static class T10_ModelLoginInvalido
 {
     public static void Run()
     {
-        Model model = new();
+        Model model = new(new MockAccountService(), new MockAccountService(), new MockProjectService());
         bool? eventValue = null;
         string? eventMessage = null;
 

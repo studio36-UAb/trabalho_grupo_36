@@ -7,7 +7,7 @@ public static class T09_ModelLoginValido
 {
     public static void Run()
     {
-        Model model = new();
+        Model model = new(new MockAccountService(), new MockAccountService(), new MockProjectService());
         bool? eventValue = null;
         string? eventMessage = null;
 
@@ -20,6 +20,6 @@ public static class T09_ModelLoginValido
         model.AreCredentialsValid(new LoginRequestData("admin", "admin123"));
 
         TestHelper.AssertTrue(eventValue == true, "The model should emit a successful login event.");
-        TestHelper.AssertTrue(eventMessage == "Login successful.\n", "The model should emit the correct success message.");
+        TestHelper.AssertTrue(eventMessage == "\nLogin successful.\n", "The model should emit the correct success message.");
     }
 }

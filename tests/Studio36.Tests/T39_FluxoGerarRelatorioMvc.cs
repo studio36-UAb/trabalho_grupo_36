@@ -7,7 +7,8 @@ public static class T39_FluxoGerarRelatorioMvc
 {
     public static void Run()
     {
-        Model model = new();
+        var mockService = new MockProjectService();
+        Model model = new(new MockAccountService(), new MockAccountService(), mockService);
         ReportFakeViewBase view = new();
         ReportGeneratorStub reportGenerator = new();
 
@@ -23,7 +24,7 @@ public static class T39_FluxoGerarRelatorioMvc
         }
 
         TestHelper.AssertTrue(
-            lastReportData.Nome == "Projeto de demonstração",
+            lastReportData.Name == "Projeto de demonstração",
             "The report generator should receive the project data returned by the Model.");
 
         TestHelper.AssertTrue(
