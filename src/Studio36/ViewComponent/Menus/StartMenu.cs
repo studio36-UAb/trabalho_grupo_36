@@ -1,30 +1,39 @@
-﻿using System;
+﻿using Studio36.Utils;
 
-namespace Studio36.ViewComponent
+using Studio36.ViewComponent.Menus.Enums;
+
+namespace Studio36.ViewComponent.Menus
 {
-    public enum StartMenuOption
-    {
-        Login,
-        SignUp,
-        Exit,
-        NotValid
-    }
-
     public class StartMenu
     {
         public void DisplayMenu()
         {
             ClearScreen();
-            Console.WriteLine("Welcome to Studio36!");
-            Console.WriteLine("Please select an option:");
-            Console.WriteLine("1. Log in");
-            Console.WriteLine("2. Sign up");
-            Console.WriteLine("3. Exit\n");
+            
+            UIUtils.WriteLineColor(@"
+  ____  _             _ _       _____  __   __
+ / ___|| |_ _   _  __| (_) ___ |___ / / /_  \ \
+ \___ \| __| | | |/ _` | |/ _ \  |_ \| '_ \  | |
+  ___) | |_| |_| | (_| | | (_) |___) | (_) | | |
+ |____/ \__|\__,_|\__,_|_|\___/|____/ \___/  |_|", ConsoleColor.Cyan);
+
+            UIUtils.WriteLineColor("  Project Management", ConsoleColor.DarkCyan);
+            Console.WriteLine();
+
+            UIUtils.PrintHeader("Welcome to Studio36");
+            
+            Console.WriteLine();
+            UIUtils.WriteColor("  [1] ", ConsoleColor.Cyan); Console.WriteLine("Log in to your account");
+            UIUtils.WriteColor("  [2] ", ConsoleColor.Cyan); Console.WriteLine("Create a new account");
+            UIUtils.WriteColor("  [3] ", ConsoleColor.Cyan); UIUtils.WriteLineColor("Exit application", ConsoleColor.Red);
+            Console.WriteLine();
+            
+            UIUtils.WriteLineColor(new string('-', 30), ConsoleColor.DarkGray);
         }
 
         public string GetUserInput()
         {
-            Console.Write("Selection: ");
+            UIUtils.WriteColor("  Selection > ", ConsoleColor.Cyan);
             string? input = Console.ReadLine();
 
             if (input == null)
@@ -48,10 +57,13 @@ namespace Studio36.ViewComponent
 
         public (string email, string password) GetLoginData()
         {
-            Console.Write("Please enter your username: ");
+            Console.WriteLine();
+            UIUtils.Info("--- LOGIN ---");
+
+            UIUtils.WriteColor("  Username: ", ConsoleColor.White);
             string email = (Console.ReadLine() ?? "").Trim();
 
-            Console.Write("Please enter your password: ");
+            UIUtils.WriteColor("  Password: ", ConsoleColor.White);
             string password = (Console.ReadLine() ?? "").Trim();
 
             return (email, password);
@@ -59,10 +71,13 @@ namespace Studio36.ViewComponent
 
         public (string email, string password) GetSignUpData()
         {
-            Console.Write("Please enter your username: ");
+            Console.WriteLine();
+            UIUtils.Info("--- SIGN UP ---");
+
+            UIUtils.WriteColor("  New Username: ", ConsoleColor.White);
             string email = (Console.ReadLine() ?? "").Trim();
 
-            Console.Write("Please enter your password: ");
+            UIUtils.WriteColor("  New Password: ", ConsoleColor.White);
             string password = (Console.ReadLine() ?? "").Trim();
 
             return (email, password);
@@ -76,6 +91,7 @@ namespace Studio36.ViewComponent
             }
             catch (IOException)
             {
+                // Ignore
             }
         }
     }

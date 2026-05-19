@@ -1,12 +1,14 @@
+using Studio36.Utils;
+
 namespace Studio36.ModelComponent
 {
     public class ModelLog
     {
-        public void RegistarLog(Exception excecao, int idProjeto)
+        public void LogRegistry(Exception exception, int projectId)
         {
-            // Regista a inconsistência detetada entre o pedido recebido
-            // e o estado interno atual do Model.
-            Console.WriteLine($"[LOG] Inconsistency while listing tasks for project {idProjeto}: {excecao.Message}");
+            // Records the inconsistency detected between the request received
+            // and the current internal state of the Model.
+            Logger.Log(LogLevel.Error, $"Inconsistency while listing tasks for project {projectId}: {exception.Message}");
         }
     }
 }

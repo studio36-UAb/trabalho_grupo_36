@@ -2,7 +2,7 @@ using System.Reflection;
 using Studio36.ControllerComponent;
 using Studio36.ModelComponent.Interfaces;
 using Studio36.ReportComponent.Interfaces;
-using Studio36.ViewComponent.Interfaces;
+using Studio36.Interfaces;
 
 namespace Studio36.Tests;
 

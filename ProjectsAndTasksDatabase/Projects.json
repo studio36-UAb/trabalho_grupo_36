@@ -1,0 +1,9 @@
+[
+  {
+    "Id": 1,
+    "Name": "Demo Project",
+    "Description": "Initial project used to demonstrate the application.",
+    "StartDate": "2026-05-18T00:00:00Z",
+    "EndDate": "2026-06-17T00:00:00Z"
+  }
+]
