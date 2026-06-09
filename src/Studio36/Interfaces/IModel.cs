@@ -1,6 +1,6 @@
 using Studio36.DTOs;
 
-namespace Studio36.ModelComponent.Interfaces
+namespace Studio36.Interfaces
 {
     public interface IModel
     {
@@ -9,14 +9,22 @@ namespace Studio36.ModelComponent.Interfaces
         event Action<CreateProjectResultData>? SendProjectCreationState;
         event Action<EditProjectResultData>? SendProjectEditionState;
         event Action<DeleteProjectResultData>? SendProjectDeletionState;
+        event Action<TaskOperationResultData>? SendTaskOperationState;
 
         void AreCredentialsValid(LoginRequestData request);
         void RegisterUser(SignUpRequestData request);
+
         void CreateProject(CreateProjectRequestData request);
         void EditProject(EditProjectRequestData request);
-        void DeleteProject(int idProjeto);
-        ProjectReportData GetProjectReportData(int idProjeto);
+        void DeleteProject(int projectId);
+
+        void AddTask(int projectId, string taskDescription);
+        void EditTask(int projectId, int taskIndex, string newDescription);
+        void DeleteTask(int projectId, int taskIndex);
+
+        ProjectReportData GetProjectReportData(int projectId);
+
         List<string> GetProjects();
-        List<string> GetTasksByProject(int idProjeto);
+        List<string> GetTasksByProject(int projectId);
     }
 }

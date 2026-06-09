@@ -1,4 +1,4 @@
 namespace Studio36.DTOs
 {
-    public record CreateProjectRequestData(string Nome, string Descricao, DateTime DataInicio, DateTime DataFim);
+    public record CreateProjectRequestData(string Name, string Description, DateTime StartDate, DateTime EndDate);
 }

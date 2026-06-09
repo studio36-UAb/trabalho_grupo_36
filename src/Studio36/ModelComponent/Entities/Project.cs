@@ -11,7 +11,7 @@ namespace Studio36.ModelComponent.Entities
             EndDate = endDate;
         }
 
-        public int Id { get; }
+        public int Id { get; private set; }
         public string Name { get; private set; }
         public string Description { get; private set; }
         public DateTime StartDate { get; private set; }

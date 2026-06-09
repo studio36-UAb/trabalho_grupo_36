@@ -1,5 +1,7 @@
 using Newtonsoft.Json;
+using Studio36.Interfaces;
 using Studio36.ModelComponent.Interfaces;
+using Studio36.ModelComponent.Services.EntitiesServices;
 using Studio36.Utils;
 
 namespace Studio36.ModelComponent.Services
@@ -62,7 +64,7 @@ namespace Studio36.ModelComponent.Services
             if (user.Password == password)
             {
                 Logger.Info($"User '{email}' logged in successfully.");
-                return (LoginResult.Success, "Login successful.\n");
+                return (LoginResult.Success, "\nLogin successful.\n");
             }
 
             Logger.Warning($"Login attempt failed: Invalid password for user '{email}'.");

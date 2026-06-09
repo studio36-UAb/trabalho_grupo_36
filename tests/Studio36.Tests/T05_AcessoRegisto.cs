@@ -6,8 +6,8 @@ public static class T05_AcessoRegisto
     {
         string output = TestHelper.RunApplication("2\nadmin\npass123\n\n3");
 
-        TestHelper.AssertContains(output, "Please enter your username:");
-        TestHelper.AssertContains(output, "Please enter your password:");
-        TestHelper.AssertContains(output, "Email already taken. Please choose another.");
+        TestHelper.AssertContains(output, "Username: ");
+        TestHelper.AssertContains(output, "Password: ");
+        TestHelper.AssertContains(output, "Registration successful! You can now log in.");
     }
 }

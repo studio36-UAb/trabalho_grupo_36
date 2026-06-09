@@ -2,6 +2,7 @@ using PdfSharp.Drawing;
 using PdfSharp.Fonts;
 using PdfSharp.Pdf;
 using Studio36.DTOs;
+using Studio36.Interfaces;
 using Studio36.ReportComponent.Interfaces;
 
 namespace Studio36.ReportComponent
@@ -27,11 +28,11 @@ namespace Studio36.ReportComponent
         {
             Directory.CreateDirectory(outputDirectory);
 
-            string fileName = $"project-{data.IdProjeto}-report.pdf";
+            string fileName = $"project-{data.ProjectId}-report.pdf";
             string filePath = Path.Combine(outputDirectory, fileName);
 
             using PdfDocument document = new();
-            document.Info.Title = $"Project {data.IdProjeto} Report";
+            document.Info.Title = $"Project {data.ProjectId} Report";
 
             PdfPage page = document.AddPage();
             using XGraphics graphics = XGraphics.FromPdfPage(page);
@@ -45,24 +46,24 @@ namespace Studio36.ReportComponent
             graphics.DrawString("Studio 36 - Project Report", titleFont, XBrushes.Black, new XRect(50, y, page.Width.Point - 100, 30), XStringFormats.TopLeft);
             y += 45;
 
-            DrawLine(graphics, bodyFont, $"Project ID: {data.IdProjeto}", ref y);
-            DrawLine(graphics, bodyFont, $"Name: {data.Nome}", ref y);
-            DrawLine(graphics, bodyFont, $"Description: {data.Descricao}", ref y);
-            DrawLine(graphics, bodyFont, $"Start date: {data.DataInicio:yyyy-MM-dd}", ref y);
-            DrawLine(graphics, bodyFont, $"End date: {data.DataFim:yyyy-MM-dd}", ref y);
+            DrawLine(graphics, bodyFont, $"Project ID: {data.ProjectId}", ref y);
+            DrawLine(graphics, bodyFont, $"Name: {data.Name}", ref y);
+            DrawLine(graphics, bodyFont, $"Description: {data.Description}", ref y);
+            DrawLine(graphics, bodyFont, $"Start date: {data.StartDate:yyyy-MM-dd}", ref y);
+            DrawLine(graphics, bodyFont, $"End date: {data.EndDate:yyyy-MM-dd}", ref y);
 
             y += 15;
             DrawLine(graphics, headingFont, "Tasks:", ref y);
 
-            if (data.Tarefas.Count == 0)
+            if (data.Tasks.Count == 0)
             {
                 DrawLine(graphics, bodyFont, "- No tasks associated with this project.", ref y);
             }
             else
             {
-                foreach (string tarefa in data.Tarefas)
+                foreach (string task in data.Tasks)
                 {
-                    DrawLine(graphics, bodyFont, $"- {tarefa}", ref y);
+                    DrawLine(graphics, bodyFont, $"- {task}", ref y);
                 }
             }
 

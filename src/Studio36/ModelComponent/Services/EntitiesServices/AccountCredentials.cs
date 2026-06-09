@@ -1,6 +1,4 @@
-using Newtonsoft.Json;
-
-namespace Studio36.ModelComponent.Services
+namespace Studio36.ModelComponent.Services.EntitiesServices
 {
     public class AccountCredentials
     {
