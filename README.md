@@ -135,7 +135,15 @@ Estes testes validam o comportamento atualmente implementado na aplicação, nom
 A partir da raiz do repositório:
 
 ```powershell
-dotnet run --project .\tests\Studio36.Tests\Studio36.Tests.csproj
+dotnet run --project .\tests\Studio36.Tests\Studio36.Tests.csproj --no-restore
+```
+
+Os testes deste repositório são executados por uma aplicação de consola própria. Por isso, o comando correto é `dotnet run`; o comando `dotnet test` apenas compila a solução e não descobre estes testes como testes xUnit, NUnit ou MSTest.
+
+No final, deverá ser apresentado um resumo semelhante a:
+
+```text
+Total: 28 | Passed: 28 | Failed: 0
 ```
 
 ### Executar um teste específico
@@ -145,8 +153,21 @@ Quando necessário, pode ser executado apenas um teste através do respetivo ide
 Exemplo (para o teste T01 Apresentação do menu inicial):
 
 ```powershell
-dotnet run --project .\tests\Studio36.Tests\Studio36.Tests.csproj -- T01
+dotnet run --project .\tests\Studio36.Tests\Studio36.Tests.csproj --no-restore -- T01
 ```
+
+### Testar o `develop` remoto atual
+
+Para validar exatamente o código que está no `develop` remoto, sem alterar a branch de trabalho:
+
+```powershell
+git fetch origin develop
+git switch --detach origin/develop
+dotnet run --project .\tests\Studio36.Tests\Studio36.Tests.csproj --no-restore
+git switch maria
+```
+
+No último comando, substituir `maria` pelo nome da branch em que estava a trabalhar, se for diferente.
 
 Testes atualmente disponíveis:
 
