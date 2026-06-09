@@ -1,8 +1,7 @@
-﻿using Studio36.DTOs;
+using Studio36.DTOs;
 using Studio36.ModelComponent;
-using Studio36.ModelComponent.Interfaces;
+using Studio36.Interfaces;
 using Studio36.ReportComponent.Interfaces;
-using Studio36.ViewComponent.Interfaces;
 
 namespace Studio36.ControllerComponent
 {
@@ -11,30 +10,41 @@ namespace Studio36.ControllerComponent
         readonly IModel model;
         readonly IView view;
         readonly IReportGenerator reportGenerator;
+
         readonly ModelLog modelLog;
 
         public Controller(IModel model, IView view, IReportGenerator reportGenerator)
         {
             this.model = model;
             this.view = view;
+
             this.reportGenerator = reportGenerator;
+
             modelLog = new ModelLog();
 
             view.UserAttemptLogin += ProcessLogin;
             view.UserAttemptSignUp += ProcessSignUp;
 
-            view.UserRequestsProjectTasks += ProcessProjectTasksRequest;
             view.UserRequestsProjectCreation += ProcessProjectCreationRequest;
+            view.UserRequestsProjectList += ProcessProjectListRequest;
             view.UserRequestsProjectEdition += ProcessProjectEditionRequest;
             view.UserRequestsProjectDeletion += ProcessProjectDeletionRequest;
+
+            view.UserRequestsProjectTasks += ProcessProjectTasksRequest;
+            view.UserRequestsTaskAddition += ProcessTaskAdditionRequest;
+            view.UserRequestsTaskEdition += ProcessTaskEditionRequest;
+            view.UserRequestsTaskDeletion += ProcessTaskDeletionRequest;
+
             view.UserRequestsProjectReport += ProcessProjectReportRequest;
-            view.UserRequestsProjectList += ProcessProjectListRequest;
 
             model.SendLoginState += OnLoginStateReceived;
             model.SendSignUpState += OnSignUpStateReceived;
+
             model.SendProjectCreationState += OnProjectCreationStateReceived;
             model.SendProjectEditionState += OnProjectEditionStateReceived;
             model.SendProjectDeletionState += OnProjectDeletionStateReceived;
+
+            model.SendTaskOperationState += OnTaskOperationStateReceived;
 
         }
 
@@ -47,6 +57,7 @@ namespace Studio36.ControllerComponent
         {
             view.ShowSignUpResult(result.Message);
         }
+
 
         private void OnProjectCreationStateReceived(CreateProjectResultData result)
         {
@@ -63,35 +74,60 @@ namespace Studio36.ControllerComponent
             view.ShowProjectDeletionResult(result.Message);
         }
 
+
+        private void OnTaskOperationStateReceived(TaskOperationResultData result)
+        {
+            view.ShowTaskOperationResult(result);
+        }
+
+
         private void ProcessProjectCreationRequest(CreateProjectRequestData request)
         {
-            CriarProjeto(request.Nome, request.Descricao, request.DataInicio, request.DataFim);
-        }
-
-        private void ProcessProjectEditionRequest(EditProjectRequestData request)
-        {
-            EditarProjeto(request.IdProjeto, request.Nome, request.Descricao, request.DataInicio, request.DataFim);
-        }
-
-        private void ProcessProjectDeletionRequest(int idProjeto)
-        {
-            EliminarProjeto(idProjeto);
-        }
-
-        private void ProcessProjectReportRequest(int idProjeto)
-        {
-            GerarRelatorio(idProjeto);
-        }
-
-        private void ProcessProjectTasksRequest(int idProjeto)
-        {
-            ListarTarefas(idProjeto);
+            CreateProject(request.Name, request.Description, request.StartDate, request.EndDate);
         }
 
         private void ProcessProjectListRequest()
         {
-            ListarProjetos();
+            ListProjects();
         }
+
+        private void ProcessProjectEditionRequest(EditProjectRequestData request)
+        {
+            EditProject(request.ProjectId, request.Name, request.Description, request.StartDate, request.EndDate);
+        }
+
+        private void ProcessProjectDeletionRequest(int projectId)
+        {
+            DeleteProject(projectId);
+        }
+
+
+        private void ProcessProjectTasksRequest(int projectId)
+        {
+            ListTasks(projectId);
+        }
+
+        private void ProcessTaskAdditionRequest(int projectId, string description)
+        {
+            AddTask(projectId, description);
+        }
+
+        private void ProcessTaskEditionRequest(int projectId, int taskId, string description)
+        {
+            EditTask(projectId, taskId, description);
+        }
+
+        private void ProcessTaskDeletionRequest(int projectId, int taskId)
+        {
+            DeleteTask(projectId, taskId);
+        }
+
+       
+        private void ProcessProjectReportRequest(int projectId)
+        {
+            GenerateReport(projectId);
+        }
+
 
         public void StartProgram()
         {
@@ -126,23 +162,12 @@ namespace Studio36.ControllerComponent
             }
         }
 
-        // AUTENTICAÇÃO
-        public bool Login(string email, string password)
-        {
-            return false;
-        }
 
-        public bool Registar(string email, string password)
-        {
-            return false;
-        }
-
-        // PROJETOS
-        public void CriarProjeto(string nome, string descricao, DateTime dataInicio, DateTime dataFim)
+        public void CreateProject(string name, string description, DateTime startDate, DateTime endDate)
         {
             try
             {
-                model.CreateProject(new CreateProjectRequestData(nome, descricao, dataInicio, dataFim));
+                model.CreateProject(new CreateProjectRequestData(name, description, startDate, endDate));
             }
             catch (ArgumentException ex)
             {
@@ -150,39 +175,39 @@ namespace Studio36.ControllerComponent
             }
             catch (Exception)
             {
-                view.ShowErrorMessage("Erro inesperado ao criar projeto.");
+                view.ShowErrorMessage("Unexpected error while creating project.");
             }
         }
 
-        public List<string> ListarProjetos()
+        public List<string> ListProjects()
         {
             try
             {
-                List<string> projetos = model.GetProjects();
-                view.ShowProjectList(projetos);
-                return projetos;
+                List<string> projects = model.GetProjects();
+                view.ShowProjectList(projects);
+                return projects;
             }
             catch (Exception)
             {
-                view.ShowErrorMessage("Erro inesperado ao listar projetos.");
+                view.ShowErrorMessage("Unexpected error while listing projects.");
                 return new List<string>();
             }
         }
 
-        public void EditarProjeto(int idProjeto, string nome, string descricao)
+        public void EditProject(int projectId, string name, string description)
         {
-            EditarProjeto(idProjeto, nome, descricao, DateTime.Today, DateTime.Today);
+            EditProject(projectId, name, description, DateTime.Today, DateTime.Today);
         }
 
-        public void EditarProjeto(int idProjeto, string nome, string descricao, DateTime dataInicio, DateTime dataFim)
+        public void EditProject(int projectId, string name, string description, DateTime startDate, DateTime endDate)
         {
             try
             {
-                model.EditProject(new EditProjectRequestData(idProjeto, nome, descricao, dataInicio, dataFim));
+                model.EditProject(new EditProjectRequestData(projectId, name, description, startDate, endDate));
             }
             catch (ProjectNotFoundException ex)
             {
-                modelLog.RegistarLog(ex, idProjeto);
+                modelLog.LogRegistry(ex, projectId);
                 view.ShowErrorMessage(ex.Message);
             }
             catch (ArgumentException ex)
@@ -191,94 +216,135 @@ namespace Studio36.ControllerComponent
             }
             catch (Exception)
             {
-                view.ShowErrorMessage("Erro inesperado ao editar projeto.");
+                view.ShowErrorMessage("Unexpected error while editing project.");
             }
         }
 
-        public void EliminarProjeto(int idProjeto)
+        public void DeleteProject(int projectId)
         {
             try
             {
-                model.DeleteProject(idProjeto);
+                model.DeleteProject(projectId);
             }
             catch (ProjectNotFoundException ex)
             {
-                modelLog.RegistarLog(ex, idProjeto);
+                modelLog.LogRegistry(ex, projectId);
                 view.ShowErrorMessage(ex.Message);
             }
             catch (Exception)
             {
-                view.ShowErrorMessage("Erro inesperado ao eliminar projeto.");
+                view.ShowErrorMessage("Unexpected error while deleting project.");
             }
         }
 
-        // TAREFAS
-        public void CriarTarefa(int idProjeto, string nome, string descricao, DateTime prazo, string prioridade)
-        {
-        }
 
-        public List<string> ListarTarefas(int idProjeto)
+        public List<string> ListTasks(int projectId)
         {
             try
             {
-                List<string> tarefas = model.GetTasksByProject(idProjeto);
-                view.ShowTaskList(tarefas);
-                return tarefas;
+                List<string> tasks = model.GetTasksByProject(projectId);
+                view.ShowTaskList(tasks);
+                return tasks;
             }
             catch (ProjectNotFoundException ex)
             {
-                modelLog.RegistarLog(ex, idProjeto);
+                modelLog.LogRegistry(ex, projectId);
 
-                List<string> listaProjetos = model.GetProjects();
+                List<string> projectList = model.GetProjects();
 
                 view.ShowErrorMessage(ex.Message);
-                view.RefreshProjectList(listaProjetos);
+                view.RefreshProjectList(projectList);
 
                 return new List<string>();
             }
             catch (Exception)
             {
-                view.ShowErrorMessage("Erro inesperado ao listar tarefas do projeto.");
+                view.ShowErrorMessage("Unexpected error while listing project tasks.");
                 return new List<string>();
             }
         }
 
-        public void EditarTarefa(int idTarefa, string nome, string descricao)
-        {
-        }
-
-        public void EliminarTarefa(int idTarefa)
-        {
-        }
-
-        // MEMBROS
-        public void AdicionarMembro(int idProjeto, string nome, string funcao)
-        {
-        }
-
-        public List<string> ListarMembros(int idProjeto)
-        {
-            return new List<string>();
-        }
-
-        // RELATÓRIOS
-        public void GerarRelatorio(int idProjeto)
+        public void AddTask(int projectId, string description)
         {
             try
             {
-                ProjectReportData reportData = model.GetProjectReportData(idProjeto);
+                model.AddTask(projectId, description);
+            }
+            catch (ProjectNotFoundException ex)
+            {
+                modelLog.LogRegistry(ex, projectId);
+                view.ShowErrorMessage(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                view.ShowErrorMessage(ex.Message);
+            }
+            catch (Exception)
+            {
+                view.ShowErrorMessage("Unexpected error while adding task.");
+            }
+        }
+
+        public void EditTask(int projectId, int taskId, string description)
+        {
+            try
+            {
+                model.EditTask(projectId, taskId, description);
+            }
+            catch (ProjectNotFoundException ex)
+            {
+                modelLog.LogRegistry(ex, projectId);
+                view.ShowErrorMessage(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                view.ShowErrorMessage(ex.Message);
+            }
+            catch (Exception)
+            {
+                view.ShowErrorMessage("Unexpected error while editing task.");
+            }
+        }
+
+        public void DeleteTask(int projectId, int taskId)
+        {
+            try
+            {
+                model.DeleteTask(projectId, taskId);
+            }
+            catch (ProjectNotFoundException ex)
+            {
+                modelLog.LogRegistry(ex, projectId);
+                view.ShowErrorMessage(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                view.ShowErrorMessage(ex.Message);
+            }
+            catch (Exception)
+            {
+                view.ShowErrorMessage("Unexpected error while deleting task.");
+            }
+        }
+
+
+        public void GenerateReport(int projectId)
+        {
+            try
+            {
+                ProjectReportData reportData = model.GetProjectReportData(projectId);
                 ReportResultData result = reportGenerator.GenerateProjectReport(reportData);
 
                 view.ShowReportResult(result.Message);
             }
             catch (ProjectNotFoundException ex)
             {
-                modelLog.RegistarLog(ex, idProjeto);
+                modelLog.LogRegistry(ex, projectId);
                 view.ShowErrorMessage(ex.Message);
             }
             catch (Exception)
             {
-                view.ShowErrorMessage("Erro inesperado ao gerar relatório.");
+                view.ShowErrorMessage("Unexpected error while generating report.");
             }
         }
     }

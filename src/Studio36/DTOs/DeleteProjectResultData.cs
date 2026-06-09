@@ -1,4 +1,4 @@
 namespace Studio36.DTOs
 {
-    public record DeleteProjectResultData(bool IsSuccessful, int IdProjeto, string Message);
+    public record DeleteProjectResultData(bool IsSuccessful, int ProjectId, string Message);
 }

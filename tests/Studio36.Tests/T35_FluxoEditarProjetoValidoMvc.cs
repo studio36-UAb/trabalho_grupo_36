@@ -1,7 +1,7 @@
 using Studio36.ControllerComponent;
 using Studio36.DTOs;
 using Studio36.ModelComponent;
-using Studio36.ViewComponent.Interfaces;
+using Studio36.Interfaces;
 
 namespace Studio36.Tests;
 
@@ -9,7 +9,7 @@ public static class T35_FluxoEditarProjetoValidoMvc
 {
     public static void Run()
     {
-        Model model = new();
+        Model model = new(new MockAccountService(), new MockAccountService(), new MockProjectService());
         FakeView view = new();
 
         _ = new Controller(model, view, new ReportGeneratorStub());

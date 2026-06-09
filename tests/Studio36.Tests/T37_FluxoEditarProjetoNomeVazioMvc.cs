@@ -8,7 +8,8 @@ public static class T37_FluxoEditarProjetoNomeVazioMvc
 {
     public static void Run()
     {
-        Model model = new();
+        var mockService = new MockProjectService();
+        Model model = new(new MockAccountService(), new MockAccountService(), mockService);
         EditProjectFakeViewBase view = new();
 
         _ = new Controller(model, view, new ReportGeneratorStub());
